@@ -15,6 +15,11 @@ func _run() -> void:
 	var menu: Control = load("res://scenes/main_menu.tscn").instantiate()
 	root.add_child(menu)
 	await process_frame
+	var background := menu.get_node_or_null("MenuBackground") as TextureRect
+	if background == null or background.texture == null:
+		push_error("Main menu background texture is missing")
+		quit(1)
+		return
 	if menu.get_child_count() == 0:
 		push_error("Main menu is empty")
 		quit(1)
