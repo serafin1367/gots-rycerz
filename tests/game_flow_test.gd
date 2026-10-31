@@ -20,6 +20,11 @@ func _run() -> void:
 		push_error("Level 2 must have player and portal")
 		quit(1)
 		return
+	var animated := portal.get_node_or_null("PortalAnimation") as AnimatedSprite2D
+	if animated == null or animated.sprite_frames.get_frame_count("loop") != 9:
+		push_error("Portal needs 9 animated frames")
+		quit(1)
+		return
 	level.queue_free()
 	print("PASS: main menu and second level portal")
 	quit(0)
