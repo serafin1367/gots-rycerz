@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/main_menu.gd" id="1"]
-[ext_resource type="Texture2D" path="res://assets/ui/menu_background.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/ui/menu_background_hd.webp" id="2"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -20,7 +20,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture_filter = 1
+texture_filter = 2
 texture = ExtResource("2")
 expand_mode = 1
 stretch_mode = 6
@@ -33,7 +33,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.02, 0.08, 0.15, 0.24)
+color = Color(0.02, 0.08, 0.15, 0.12)
 
 [node name="Center" type="CenterContainer" parent="."]
 layout_mode = 1

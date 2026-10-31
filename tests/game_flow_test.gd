@@ -16,7 +16,7 @@ func _run() -> void:
 	root.add_child(menu)
 	await process_frame
 	var background := menu.get_node_or_null("MenuBackground") as TextureRect
-	if background == null or background.texture == null or background.anchor_right != 1.0 or background.anchor_bottom != 1.0:
+	if background == null or background.texture == null or background.anchor_right != 1.0 or background.anchor_bottom != 1.0 or background.texture.get_width() < 384:
 		push_error("Main menu background texture is missing")
 		quit(1)
 		return
