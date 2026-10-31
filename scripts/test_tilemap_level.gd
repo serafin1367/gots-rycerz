@@ -11,8 +11,6 @@ const GRASS := Vector2i(0, 0)
 const ROCK_A := Vector2i(1, 0)
 const ROCK_B := Vector2i(1, 1)
 const DIRT := Vector2i(0, 1)
-const BG_BLUE := Vector2i(4, 9)
-const BG_PATTERN := Vector2i(4, 12)
 
 var terrain: TileMapLayer
 var background: TileMapLayer
@@ -23,7 +21,7 @@ func _ready() -> void:
 	var source := TileSetAtlasSource.new()
 	source.texture = ATLAS
 	source.texture_region_size = Vector2i(TILE_SIZE, TILE_SIZE)
-	for tile in [GRASS, ROCK_A, ROCK_B, DIRT, BG_BLUE, BG_PATTERN]:
+	for tile in [GRASS, ROCK_A, ROCK_B, DIRT]:
 		if not source.has_tile(tile):
 			source.create_tile(tile)
 	tileset.add_source(source, 0)
@@ -47,10 +45,27 @@ func _ready() -> void:
 	_make_objects()
 
 func _make_background() -> void:
-	for y in range(-5, 19):
-		for x in range(-4, 51):
-			var tile := BG_PATTERN if y >= 12 else BG_BLUE
-			background.set_cell(Vector2i(x, y), 0, tile)
+	# Atlas coordinates 4:9 and 4:12 are patterned transition tiles.
+	# They must not be repeated as full-screen background.
+	# Use clean solid colors until the atlas background regions are mapped.
+	var sky := Polygon2D.new()
+	sky.name = "Sky"
+	sky.z_index = -30
+	sky.color = Color("#1597d5")
+	sky.polygon = PackedVector2Array([
+		Vector2(-200, -500), Vector2(1100, -500),
+		Vector2(1100, 320), Vector2(-200, 320)
+	])
+	add_child(sky)
+	var horizon := Polygon2D.new()
+	horizon.name = "DistantBlue"
+	horizon.z_index = -25
+	horizon.color = Color("#1964c1")
+	horizon.polygon = PackedVector2Array([
+		Vector2(-200, 196), Vector2(1100, 196),
+		Vector2(1100, 320), Vector2(-200, 320)
+	])
+	add_child(horizon)
 
 func _make_ground(start_x: int, end_x: int, top_y: int, bottom_y: int) -> void:
 	for x in range(start_x, end_x):
@@ -93,7 +108,7 @@ func _make_objects() -> void:
 		coins.add_child(coin)
 	var enemy := SLIME.instantiate()
 	enemy.name = "Slime"
-	enemy.position = Vector2(382, 148)
+	enemy.position = Vector2(620, 148)
 	enemy.patrol_left = 33 * TILE_SIZE + 26
 	enemy.patrol_right = 46 * TILE_SIZE - 26
 	add_child(enemy)
