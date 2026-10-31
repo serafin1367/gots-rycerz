@@ -25,41 +25,6 @@ script = ExtResource("4")
 
 [node name="Coins" type="Node2D" parent="."]
 
-[node name="Coin01" parent="Coins" instance=ExtResource("3")]
-position = Vector2(96, 74)
-
-[node name="Coin02" parent="Coins" instance=ExtResource("3")]
-position = Vector2(154, 74)
-
-[node name="Coin03" parent="Coins" instance=ExtResource("3")]
-position = Vector2(255, 17)
-
-[node name="Coin04" parent="Coins" instance=ExtResource("3")]
-position = Vector2(326, 75)
-
-[node name="Coin05" parent="Coins" instance=ExtResource("3")]
-position = Vector2(406, 15)
-
-[node name="Coin06" parent="Coins" instance=ExtResource("3")]
-position = Vector2(476, 31)
-
-[node name="Coin07" parent="Coins" instance=ExtResource("3")]
-position = Vector2(524, 4)
-
-[node name="Coin08" parent="Coins" instance=ExtResource("3")]
-position = Vector2(591, 75)
-
-[node name="Coin09" parent="Coins" instance=ExtResource("3")]
-position = Vector2(647, -4)
-
-[node name="Coin10" parent="Coins" instance=ExtResource("3")]
-position = Vector2(721, 31)
-
-[node name="Coin11" parent="Coins" instance=ExtResource("3")]
-position = Vector2(809, 34)
-
-[node name="Coin12" parent="Coins" instance=ExtResource("3")]
-position = Vector2(941, 74)
 
 [node name="LevelPortal" type="Area2D" parent="."]
 position = Vector2(962, 62)

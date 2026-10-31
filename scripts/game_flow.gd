@@ -5,6 +5,7 @@ const MAIN_MENU := "res://scenes/main_menu.tscn"
 const SAVE_PATH := "user://rycerz_progress.cfg"
 var save_path := SAVE_PATH
 var level_index := 0
+var level_seed: int = 0
 var paused := false
 var overlay: CanvasLayer
 
@@ -19,6 +20,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func start_game() -> void:
 	level_index = 0
+	level_seed = randi_range(1, 2147483647)
 	_save_progress(level_index)
 	_open_level()
 
@@ -38,20 +40,27 @@ func _read_progress() -> int:
 	var config := ConfigFile.new()
 	if config.load(save_path) != OK:
 		return -1
-	if config.get_value("progress", "version", -1) != 1:
+	var version: int = config.get_value("progress", "version", -1)
+	if version != 1 and version != 2:
 		return -1
 	var value: Variant = config.get_value("progress", "level_index", -1)
 	if typeof(value) != TYPE_INT:
 		return -1
 	if value < 0 or value >= LEVELS.size():
 		return -1
+	level_seed = int(config.get_value("progress", "seed", 0)) if version == 2 else 0
+	if level_seed <= 0:
+		level_seed = randi_range(1, 2147483647)
 	return value
 
 func _save_progress(index: int) -> bool:
 	if index < 0 or index >= LEVELS.size():
 		return false
 	var config := ConfigFile.new()
-	config.set_value("progress", "version", 1)
+	if level_seed <= 0:
+		level_seed = randi_range(1, 2147483647)
+	config.set_value("progress", "version", 2)
+	config.set_value("progress", "seed", level_seed)
 	config.set_value("progress", "level_index", index)
 	var err := config.save(save_path)
 	if err != OK:

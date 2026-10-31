@@ -66,7 +66,7 @@ func _run() -> void:
 	var manager := level.get_node_or_null("GameManager")
 	var coins := level.get_node_or_null("Coins")
 	var enemy_count := level.find_children("*", "AnimatedSprite2D", true, false).filter(func(n): return n.is_in_group("enemies")).size()
-	if manager == null or coins == null or coins.get_child_count() < 10 or enemy_count < 3:
+	if manager == null or coins == null or coins.get_child_count() < 10 or enemy_count < 3 or level.islands.size() != 5:
 		push_error("Level 2 needs manager, at least ten coins and three enemies")
 		quit(1)
 		return
@@ -79,6 +79,17 @@ func _run() -> void:
 		push_error("Portal needs 9 animated frames")
 		quit(1)
 		return
+	for i in range(level.islands.size() - 1):
+		var gap: float = level.islands[i + 1].x - level.islands[i].y
+		if gap < 28.0 or gap > 43.0:
+			push_error("Procedural gap outside safe bounds")
+			quit(1)
+			return
+	for enemy in level.get_children():
+		if enemy.is_in_group("enemies") and (enemy.patrol_left >= enemy.position.x or enemy.patrol_right <= enemy.position.x):
+			push_error("Slime patrol bounds are invalid")
+			quit(1)
+			return
 	level.queue_free()
 	print("PASS: main menu and second level portal")
 	quit(0)

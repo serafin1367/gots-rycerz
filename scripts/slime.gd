@@ -3,6 +3,9 @@ extends AnimatedSprite2D
 const SPEED = 50
 @export_range(1, 10) var max_health: int = 1
 var health: int = 1
+# Optional safe patrol bounds set by the procedural level.
+var patrol_left: float = -INF
+var patrol_right: float = INF
 
 func _ready() -> void:
 	add_to_group("enemies")
@@ -23,10 +26,16 @@ var direction = 1
 
 
 func _process(delta: float) -> void:
-	if ray_cast_right.is_colliding():
+	if position.x >= patrol_right:
+		direction = -1
+		slime.flip_h = true
+	elif position.x <= patrol_left:
+		direction = 1
+		slime.flip_h = false
+	elif ray_cast_right.is_colliding():
 		direction = -1
 		slime.flip_h = true
 	if ray_cast_left.is_colliding():
 		direction = 1
 		slime.flip_h = false
-	position.x += direction * SPEED * delta
+	position.x = clampf(position.x + direction * SPEED * delta, patrol_left, patrol_right)
