@@ -9,7 +9,7 @@ func _run() -> void:
 		push_error("Attack spritesheet must be 192x32")
 		quit(1)
 		return
-	var preview := load("res://scenes/attack_preview.tscn").instantiate()
+	var preview: Node = load("res://scenes/attack_preview.tscn").instantiate()
 	root.add_child(preview)
 	await process_frame
 	var sprite := preview.get_node_or_null("AttackPreview") as AnimatedSprite2D

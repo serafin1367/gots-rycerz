@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://ef7fn40nn7xo"]
+[gd_scene load_steps=25 format=3 uid="uid://ef7fn40nn7xo"]
 
 [ext_resource type="Script" uid="uid://cy54wlg5kdlnn" path="res://scripts/game_manager.gd" id="1_u5sy4"]
 [ext_resource type="PackedScene" uid="uid://dtoo86ssh7xva" path="res://scenes/player.tscn" id="1_uwrxv"]
@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://sifusims7ar4" path="res://scenes/kill_zone.tscn" id="5_iywne"]
 [ext_resource type="PackedScene" uid="uid://dtvjpog1xbt75" path="res://scenes/slime.tscn" id="6_p57ef"]
 [ext_resource type="FontFile" uid="uid://dsopqom8xpkjl" path="res://assets/fonts/PixelOperator8.ttf" id="8_gee14"]
+
+[ext_resource type="Script" path="res://scripts/level_portal.gd" id="9_level_portal"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lnu2h"]
 texture = ExtResource("2_yqjtg")
@@ -456,3 +458,7 @@ autoplay = "move"
 
 [node name="Slime" parent="Platforms" instance=ExtResource("6_p57ef")]
 position = Vector2(537, 66)
+
+[node name="LevelPortal" type="Area2D" parent="."]
+position = Vector2(625, -201)
+script = ExtResource("9_level_portal")
