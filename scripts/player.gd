@@ -11,22 +11,17 @@ const DECELERATION = 900.0
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var audio_jump: AudioStreamPlayer = $AudioJump
+@onready var audio_hurt: AudioStreamPlayer = $AudioHurt
 
 var health: int = 3
 var invulnerability_left: float = 0.0
 var dead := false
-var health_label: Label
+var heart_labels: Array[Label] = []
 
 func _ready() -> void:
 	add_to_group("player")
 	health = max_health
-	var camera := get_node_or_null("Camera2D") as Camera2D
-	if camera != null:
-		health_label = Label.new()
-		health_label.name = "HealthLabel"
-		health_label.position = Vector2(-89, -44)
-		health_label.add_theme_font_size_override("font_size", 10)
-		camera.add_child(health_label)
+	_create_hearts_hud()
 	_update_health_display()
 	health_changed.emit(health, max_health)
 
@@ -34,6 +29,7 @@ func take_damage(amount: int = 1) -> bool:
 	if dead or invulnerability_left > 0.0 or amount <= 0:
 		return false
 	health = maxi(health - amount, 0)
+	audio_hurt.play()
 	health_changed.emit(health, max_health)
 	_update_health_display()
 	if health == 0:
@@ -43,9 +39,27 @@ func take_damage(amount: int = 1) -> bool:
 		animated_sprite.play("hit")
 	return true
 
+func _create_hearts_hud() -> void:
+	var canvas := CanvasLayer.new()
+	canvas.name = "HealthHUD"
+	canvas.layer = 10
+	add_child(canvas)
+	var row := HBoxContainer.new()
+	row.name = "Hearts"
+	row.position = Vector2(12, 8)
+	row.add_theme_constant_override("separation", 3)
+	canvas.add_child(row)
+	for i in range(max_health):
+		var heart := Label.new()
+		heart.name = "Heart%d" % (i + 1)
+		heart.text = "♥"
+		heart.add_theme_font_size_override("font_size", 24)
+		row.add_child(heart)
+		heart_labels.append(heart)
+
 func _update_health_display() -> void:
-	if health_label != null:
-		health_label.text = "HP: %d/%d" % [health, max_health]
+	for i in range(heart_labels.size()):
+		heart_labels[i].add_theme_color_override("font_color", Color("#ed344f") if i < health else Color("#4b4653"))
 
 func _die() -> void:
 	if dead:

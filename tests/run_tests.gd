@@ -90,13 +90,20 @@ func _test_health() -> void:
 	root.add_child(player)
 	await process_frame
 	check(player.health == 3 and not player.dead, "Player begins with three HP")
+	check(player.heart_labels.size() == 3, "HUD shows three hearts")
+	check(player.heart_labels[0].text == "♥", "HUD uses heart symbols")
+	check(player.audio_hurt.stream != null, "Damage sound resource is loaded")
 	check(player.take_damage(), "First damage is accepted")
 	check(player.health == 2, "Damage removes one HP")
+	check(player.audio_hurt.playing, "Damage plays hurt sound")
+	check(player.heart_labels[2].get_theme_color("font_color") == Color("#4b4653"), "Lost heart is dimmed")
+	check(player.heart_labels[0].get_theme_color("font_color") == Color("#ed344f"), "Remaining hearts are red")
 	check(not player.take_damage() and player.health == 2, "Invulnerability blocks repeat hits")
 	player.invulnerability_left = 0.0
 	check(player.take_damage() and player.health == 1, "Damage after invulnerability is accepted")
 	player.invulnerability_left = 0.0
 	check(player.take_damage() and player.health == 0 and player.dead, "Last HP causes death")
+	check(player.heart_labels[0].get_theme_color("font_color") == Color("#4b4653"), "All hearts dim when HP reaches zero")
 	check(not player.take_damage(), "Dead player cannot take more damage")
 	player.queue_free()
 	await process_frame

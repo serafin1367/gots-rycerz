@@ -4,4 +4,4 @@ Postać rozpoczyna z trzema HP. Kontakt ze slime'em odbiera 1 HP; po trafieniu d
 
 Parametry `max_health` i `invulnerability_seconds` są eksportowane w skrypcie postaci; obrażenia przeciwnika reguluje `damage` w `scripts/damage_zone.gd`.
 
-Widoczny jest licznik `HP: x/3` pod licznikiem monet. Testy regresyjne sprawdzają obrażenia, nietykalność, śmierć i kolizje z przeciwnikiem.
+HUD używa trzech serc w lewym górnym rogu ekranu. Czerwone serce oznacza aktywny punkt życia, przygaszone serce oznacza utracony punkt. HUD jest wyświetlany w CanvasLayer, więc pozostaje na ekranie podczas przesuwania kamery. Przy każdym przyjętym trafieniu odtwarzany jest plik `assets/sounds/hurt.wav` przez magistralę `SFX`. Testy regresyjne sprawdzają obrażenia, nietykalność, śmierć i kolizje z przeciwnikiem.
