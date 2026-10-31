@@ -1,0 +1,22 @@
+name: Attack preview validation
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.4.1
+          use-dotnet: false
+      - run: godot --headless --path . --editor --import --quit
+      - run: godot --headless --path . --script res://tests/attack_preview_test.gd
