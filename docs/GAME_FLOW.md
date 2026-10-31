@@ -4,3 +4,6 @@ Menu główne uruchamia pierwszy poziom. Klawisz Escape otwiera menu pauzy z opc
 
 ## Portal pixel art
 Portal na obu poziomach używa dziewięciu klatek animacji po 32×64 px z `assets/sprites/portal_atlas.png`. Oryginalny GIF został przetworzony do przezroczystego arkusza (zielone tło zostało usunięte). Mechanika końca poziomu pozostała bez zmian. Animacja odtwarza się z szybkością 10 FPS, filtrowanie Nearest.
+
+## Zapisywanie postępu
+Postęp gry jest zapisywany w `user://rycerz_progress.cfg`. Przy rozpoczęciu nowej gry zapis jest resetowany do pierwszego poziomu, a po przejściu przez portal odblokowywany jest kolejny (lub zachowany ostatni, jeśli nie ma kolejnych). W menu głównym przycisk „Kontynuuj” jest niedostępny bez poprawnego zapisu. Kontynuacja uruchamia zapisany poziom od początku; nie zachowuje aktualnej pozycji rycerza, zdrowia ani monet. Błędne i niekompatybilne pliki zapisu są ignorowane.

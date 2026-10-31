@@ -17,11 +17,14 @@ func _ready() -> void:
 	heading.add_theme_font_size_override("font_size", 38)
 	box.add_child(heading)
 	_button(box, "Nowa gra", Callable(GameFlow, "start_game"))
+	var continue_button := _button(box, "Kontynuuj", Callable(GameFlow, "continue_game"))
+	continue_button.disabled = not GameFlow.has_save()
 	_button(box, "Wyjscie", Callable(get_tree(), "quit"))
 
-func _button(box: VBoxContainer, caption: String, callback: Callable) -> void:
+func _button(box: VBoxContainer, caption: String, callback: Callable) -> Button:
 	var button := Button.new()
 	button.text = caption
 	button.custom_minimum_size = Vector2(240, 48)
 	button.pressed.connect(callback)
 	box.add_child(button)
+	return button

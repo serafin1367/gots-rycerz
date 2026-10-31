@@ -2,6 +2,8 @@ extends Node
 
 const LEVELS: Array[String] = ["res://scenes/game.tscn", "res://scenes/level_02.tscn"]
 const MAIN_MENU := "res://scenes/main_menu.tscn"
+const SAVE_PATH := "user://rycerz_progress.cfg"
+var save_path := SAVE_PATH
 var level_index := 0
 var paused := false
 var overlay: CanvasLayer
@@ -17,7 +19,45 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func start_game() -> void:
 	level_index = 0
+	_save_progress(level_index)
 	_open_level()
+
+func has_save() -> bool:
+	return _read_progress() >= 0
+
+func continue_game() -> void:
+	var saved := _read_progress()
+	if saved < 0:
+		return
+	level_index = saved
+	_open_level()
+
+func _read_progress() -> int:
+	if not FileAccess.file_exists(save_path):
+		return -1
+	var config := ConfigFile.new()
+	if config.load(save_path) != OK:
+		return -1
+	if config.get_value("progress", "version", -1) != 1:
+		return -1
+	var value: Variant = config.get_value("progress", "level_index", -1)
+	if typeof(value) != TYPE_INT:
+		return -1
+	if value < 0 or value >= LEVELS.size():
+		return -1
+	return value
+
+func _save_progress(index: int) -> bool:
+	if index < 0 or index >= LEVELS.size():
+		return false
+	var config := ConfigFile.new()
+	config.set_value("progress", "version", 1)
+	config.set_value("progress", "level_index", index)
+	var err := config.save(save_path)
+	if err != OK:
+		push_warning("Nie udalo sie zapisac postepu: %s" % err)
+		return false
+	return true
 
 func _open_level() -> void:
 	_clear_pause()
@@ -26,6 +66,7 @@ func _open_level() -> void:
 func complete_level() -> void:
 	if paused:
 		return
+	_save_progress(mini(level_index + 1, LEVELS.size() - 1))
 	paused = true
 	get_tree().paused = true
 	_show_overlay(true)
