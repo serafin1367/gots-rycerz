@@ -1,18 +1,80 @@
 extends CharacterBody2D
 
+signal health_changed(current: int, maximum: int)
+
 const SPEED = 130.0
 const JUMP_VELOCITY = -300.0
 const DECELERATION = 900.0
 
+@export_range(1, 20) var max_health: int = 3
+@export var invulnerability_seconds: float = 1.2
+
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var audio_jump: AudioStreamPlayer = $AudioJump
 
+var health: int = 3
+var invulnerability_left: float = 0.0
+var dead := false
+var health_label: Label
+
 func _ready() -> void:
 	add_to_group("player")
+	health = max_health
+	var camera := get_node_or_null("Camera2D") as Camera2D
+	if camera != null:
+		health_label = Label.new()
+		health_label.name = "HealthLabel"
+		health_label.position = Vector2(-89, -44)
+		health_label.add_theme_font_size_override("font_size", 10)
+		camera.add_child(health_label)
+	_update_health_display()
+	health_changed.emit(health, max_health)
+
+func take_damage(amount: int = 1) -> bool:
+	if dead or invulnerability_left > 0.0 or amount <= 0:
+		return false
+	health = maxi(health - amount, 0)
+	health_changed.emit(health, max_health)
+	_update_health_display()
+	if health == 0:
+		_die()
+	else:
+		invulnerability_left = invulnerability_seconds
+		animated_sprite.play("hit")
+	return true
+
+func _update_health_display() -> void:
+	if health_label != null:
+		health_label.text = "HP: %d/%d" % [health, max_health]
+
+func _die() -> void:
+	if dead:
+		return
+	dead = true
+	velocity = Vector2.ZERO
+	set_deferred("collision_layer", 0)
+	set_deferred("collision_mask", 0)
+	animated_sprite.play("hit")
+	var tree := get_tree()
+	if tree != null and current_scene_is_available():
+		tree.create_timer(0.7).timeout.connect(func() -> void:
+			if is_instance_valid(self):
+				tree.reload_current_scene()
+		)
+
+func current_scene_is_available() -> bool:
+	return get_tree().current_scene != null
 
 func _physics_process(delta: float) -> void:
-	var on_floor := is_on_floor()
+	if dead:
+		return
+	if invulnerability_left > 0.0:
+		invulnerability_left = maxf(invulnerability_left - delta, 0.0)
+		animated_sprite.modulate = Color(1.0, 0.5, 0.5) if int(invulnerability_left * 10.0) % 2 == 0 else Color.WHITE
+	else:
+		animated_sprite.modulate = Color.WHITE
 
+	var on_floor := is_on_floor()
 	if not on_floor:
 		velocity += get_gravity() * delta
 
@@ -27,7 +89,9 @@ func _physics_process(delta: float) -> void:
 	elif direction > 0:
 		animated_sprite.flip_h = false
 
-	if on_floor:
+	if invulnerability_left > maxf(invulnerability_seconds - 0.25, 0.0):
+		animated_sprite.play("hit")
+	elif on_floor:
 		if is_zero_approx(direction):
 			animated_sprite.play("idle")
 		else:

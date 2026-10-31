@@ -16,6 +16,8 @@ func check(condition: bool, message: String) -> void:
 
 func _run_tests() -> void:
 	await _test_player()
+	await _test_health()
+	await _test_damage_zone()
 	await _test_kill_zone()
 	await _test_coins()
 	print("TEST RESULTS: %d passed, %d failed" % [passed, failed])
@@ -81,4 +83,39 @@ func _test_coins() -> void:
 			player.free()
 			other.free()
 	level.queue_free()
+	await process_frame
+
+func _test_health() -> void:
+	var player := preload("res://scenes/player.tscn").instantiate()
+	root.add_child(player)
+	await process_frame
+	check(player.health == 3 and not player.dead, "Player begins with three HP")
+	check(player.take_damage(), "First damage is accepted")
+	check(player.health == 2, "Damage removes one HP")
+	check(not player.take_damage() and player.health == 2, "Invulnerability blocks repeat hits")
+	player.invulnerability_left = 0.0
+	check(player.take_damage() and player.health == 1, "Damage after invulnerability is accepted")
+	player.invulnerability_left = 0.0
+	check(player.take_damage() and player.health == 0 and player.dead, "Last HP causes death")
+	check(not player.take_damage(), "Dead player cannot take more damage")
+	player.queue_free()
+	await process_frame
+
+func _test_damage_zone() -> void:
+	var zone := Area2D.new()
+	zone.set_script(load("res://scripts/damage_zone.gd"))
+	root.add_child(zone)
+	var player := preload("res://scenes/player.tscn").instantiate()
+	root.add_child(player)
+	await process_frame
+	var other := Node2D.new()
+	zone._on_body_entered(other)
+	check(player.health == 3, "Non-player in enemy damage area is ignored")
+	zone._on_body_entered(player)
+	check(player.health == 2, "Enemy contact removes one HP")
+	zone._on_body_entered(player)
+	check(player.health == 2, "Repeated enemy contact respects invulnerability")
+	other.free()
+	player.queue_free()
+	zone.queue_free()
 	await process_frame
