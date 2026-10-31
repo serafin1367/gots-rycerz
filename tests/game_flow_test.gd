@@ -70,6 +70,18 @@ func _run() -> void:
 		push_error("Level 2 needs manager, at least ten coins and three enemies")
 		quit(1)
 		return
+	var first_coin: Area2D = coins.get_child(0) as Area2D
+	var player: CharacterBody2D = level.get_node("Player")
+	if first_coin == null or first_coin._find_game_manager() != manager:
+		push_error("Procedurally spawned coin must resolve GameManager")
+		quit(1)
+		return
+	var score_before: int = manager.score
+	first_coin._on_body_entered(player)
+	if manager.score != score_before + 1 or not first_coin.collected:
+		push_error("Collecting a procedural coin must increment score")
+		quit(1)
+		return
 	if not level.has_node("Player") or portal == null or portal.collision_mask != 2:
 		push_error("Level 2 must have player and portal")
 		quit(1)
