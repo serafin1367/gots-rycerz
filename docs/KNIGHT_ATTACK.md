@@ -1,9 +1,7 @@
-# Prototyp animacji ataku rycerza
+# Atak mieczem — wersja eksperymentalna
 
-Arkusz: `res://assets/sprites/knight_attack_32x32.png` (192 × 32 px, sześć klatek 32 × 32 px, RGBA).
+Grafika `assets/sprites/knight_attack_32x32.png` to sześć osobnych klatek po 32×32 px (łącznie 192×32), wykonanych na bazie *rzeczywistej pierwszej klatki* z `knight.png`. Postać zachowuje dokładnie tę samą kolorystykę i sylwetkę; miecz i efekt cięcia są nakładane wewnątrz poszczególnych klatek, bez przenikania pomiędzy nimi.
 
-Scena podglądu: `res://scenes/attack_preview.tscn`. Otwórz ją w Godot 4.4 i uruchom bieżącą scenę (F6), aby obejrzeć zapętloną animację w powiększeniu 4×. Podgląd nie zmienia sceny startowej ani działającego systemu sterowania.
+Klawisz `J` aktywuje atak. Czas ataku: 0,6 s. Obrażenia trafiają w oknie 0,2–0,5 s, maksymalnie jeden raz dla każdego przeciwnika podczas zamachu. Slime ma domyślnie 1 HP. Nie zmieniano pozostałych animacji, HUD ani poziomu. Podgląd: `scenes/attack_preview.tscn` (F6).
 
-To prototyp wygenerowany i zmniejszony do formatu 32×32. Przed włączeniem go do rozgrywki należy wizualnie zatwierdzić spójność z bazowym rycerzem oraz ocenić czy szerszy łuk miecza nie wymaga oddzielnej nakładki. Klatki nie są jeszcze podłączone do kolizji i nie zadają obrażeń.
-
-Zalecane ustawienia importu w Godot: filtr tekstur Nearest; bez interpolacji krawędzi. Obraz ma oszczędną paletę 32 kolorów.
+Atak jest prototypem do weryfikacji wizualnej i manualnego sprawdzenia kolizji w Godot.

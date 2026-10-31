@@ -5,6 +5,8 @@ signal health_changed(current: int, maximum: int)
 const SPEED = 130.0
 const JUMP_VELOCITY = -300.0
 const DECELERATION = 900.0
+const SWORD_SHEET = preload("res://assets/sprites/knight_attack_32x32.png")
+const ATTACK_TIME = 0.6
 
 @export_range(1, 20) var max_health: int = 3
 @export var invulnerability_seconds: float = 1.2
@@ -22,10 +24,16 @@ const COIN_SHEET = preload("res://assets/sprites/coin.png")
 
 var heart_icons: Array[TextureRect] = []
 var coin_label: Label
+var sword_sprite: AnimatedSprite2D
+var sword_area: Area2D
+var attacking := false
+var attack_time := 0.0
+var struck: Array[Node] = []
 
 func _ready() -> void:
 	add_to_group("player")
 	health = max_health
+	_create_sword()
 	_create_hearts_hud()
 	_update_health_display()
 	health_changed.emit(health, max_health)
@@ -43,6 +51,69 @@ func take_damage(amount: int = 1) -> bool:
 		invulnerability_left = invulnerability_seconds
 		animated_sprite.play("hit")
 	return true
+
+func _create_sword() -> void:
+	sword_sprite = AnimatedSprite2D.new()
+	sword_sprite.name = "SwordAnimation"
+	sword_sprite.position = Vector2(0, -12)
+	sword_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	var frames := SpriteFrames.new()
+	frames.add_animation("swing")
+	frames.set_animation_speed("swing", 10.0)
+	frames.set_animation_loop("swing", false)
+	for i in range(6):
+		var texture := AtlasTexture.new()
+		texture.atlas = SWORD_SHEET
+		texture.region = Rect2(i * 32, 0, 32, 32)
+		frames.add_frame("swing", texture)
+	sword_sprite.sprite_frames = frames
+	sword_sprite.visible = false
+	add_child(sword_sprite)
+	sword_area = Area2D.new()
+	sword_area.name = "SwordArea"
+	sword_area.collision_layer = 0
+	sword_area.collision_mask = 1
+	sword_area.monitoring = true
+	var shape := RectangleShape2D.new()
+	shape.size = Vector2(20, 20)
+	var collision := CollisionShape2D.new()
+	collision.shape = shape
+	sword_area.add_child(collision)
+	add_child(sword_area)
+	_sync_sword_facing()
+
+func _sync_sword_facing() -> void:
+	if sword_sprite == null:
+		return
+	sword_sprite.flip_h = animated_sprite.flip_h
+	sword_area.position = Vector2(-15 if animated_sprite.flip_h else 15, -12)
+
+func begin_attack() -> bool:
+	if dead or attacking:
+		return false
+	attacking = true
+	attack_time = 0.0
+	struck.clear()
+	_sync_sword_facing()
+	animated_sprite.visible = false
+	sword_sprite.visible = true
+	sword_sprite.play("swing")
+	return true
+
+func _tick_attack(delta: float) -> void:
+	if not attacking:
+		return
+	attack_time += delta
+	if attack_time >= 0.2 and attack_time < 0.5:
+		for area in sword_area.get_overlapping_areas():
+			var enemy := area.get_parent()
+			if enemy.is_in_group("enemies") and enemy.has_method("take_damage") and not struck.has(enemy):
+				struck.append(enemy)
+				enemy.take_damage(1)
+	if attack_time >= ATTACK_TIME:
+		attacking = false
+		sword_sprite.visible = false
+		animated_sprite.visible = true
 
 func _create_hearts_hud() -> void:
 	var canvas := CanvasLayer.new()
@@ -111,6 +182,9 @@ func current_scene_is_available() -> bool:
 func _physics_process(delta: float) -> void:
 	if dead:
 		return
+	if Input.is_action_just_pressed("attack"):
+		begin_attack()
+	_tick_attack(delta)
 	if invulnerability_left > 0.0:
 		invulnerability_left = maxf(invulnerability_left - delta, 0.0)
 		animated_sprite.modulate = Color(1.0, 0.5, 0.5) if int(invulnerability_left * 10.0) % 2 == 0 else Color.WHITE
@@ -132,6 +206,8 @@ func _physics_process(delta: float) -> void:
 	elif direction > 0:
 		animated_sprite.flip_h = false
 
+	if not attacking:
+		_sync_sword_facing()
 	if invulnerability_left > maxf(invulnerability_seconds - 0.25, 0.0):
 		animated_sprite.play("hit")
 	elif on_floor:

@@ -16,6 +16,7 @@ func check(condition: bool, message: String) -> void:
 
 func _run_tests() -> void:
 	await _test_player()
+	await _test_sword()
 	await _test_health()
 	await _test_damage_zone()
 	await _test_kill_zone()
@@ -132,4 +133,26 @@ func _test_damage_zone() -> void:
 	other.free()
 	player.queue_free()
 	zone.queue_free()
+	await process_frame
+
+func _test_sword() -> void:
+	var player := preload("res://scenes/player.tscn").instantiate()
+	root.add_child(player)
+	await process_frame
+	check(player.sword_sprite.sprite_frames.get_frame_count("swing") == 6, "Attack has six separate frames")
+	check(player.begin_attack(), "Attack begins")
+	check(not player.begin_attack(), "Attack is not restarted mid-swing")
+	player._tick_attack(0.61)
+	check(not player.attacking and player.animated_sprite.visible, "Idle sprite restored after swing")
+	player.animated_sprite.flip_h = true
+	player._sync_sword_facing()
+	check(player.sword_area.position.x < 0, "Sword follows facing left")
+	var enemy := preload("res://scenes/slime.tscn").instantiate()
+	root.add_child(enemy)
+	await process_frame
+	check(enemy.is_in_group("enemies"), "Slime is an enemy")
+	enemy.take_damage(1)
+	check(enemy.health == 0, "Slime takes sword damage")
+	enemy.queue_free()
+	player.queue_free()
 	await process_frame
