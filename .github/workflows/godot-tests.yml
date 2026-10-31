@@ -1,0 +1,24 @@
+name: Godot tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.4.1
+          use-dotnet: false
+      - name: Import resources and validate project
+        run: godot --headless --path . --editor --import --quit
+      - name: Run regression tests
+        run: godot --headless --path . --script res://tests/run_tests.gd

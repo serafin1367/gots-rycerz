@@ -1,0 +1,84 @@
+extends SceneTree
+
+var passed := 0
+var failed := 0
+
+func _initialize() -> void:
+	call_deferred("_run_tests")
+
+func check(condition: bool, message: String) -> void:
+	if condition:
+		passed += 1
+		print("PASS: ", message)
+	else:
+		failed += 1
+		push_error("FAIL: " + message)
+
+func _run_tests() -> void:
+	await _test_player()
+	await _test_kill_zone()
+	await _test_coins()
+	print("TEST RESULTS: %d passed, %d failed" % [passed, failed])
+	quit(1 if failed > 0 else 0)
+
+func _test_player() -> void:
+	var player := preload("res://scenes/player.tscn").instantiate() as CharacterBody2D
+	root.add_child(player)
+	await process_frame
+	check(player.is_in_group("player"), "Player is registered in player group")
+	player.velocity.x = 130.0
+	player._physics_process(0.1)
+	check(is_equal_approx(player.velocity.x, 40.0), "Horizontal deceleration uses delta")
+	player.queue_free()
+	await process_frame
+
+func _test_kill_zone() -> void:
+	var zone := preload("res://scenes/kill_zone.tscn").instantiate()
+	root.add_child(zone)
+	await process_frame
+	var timer := zone.get_node("Timer") as Timer
+	var other := Node2D.new()
+	zone._on_body_entered(other)
+	check(timer.is_stopped(), "Non-player cannot trigger death")
+	var player := Node2D.new()
+	player.add_to_group("player")
+	zone._on_body_entered(player)
+	check(not timer.is_stopped(), "Player starts death timer")
+	var first_time := timer.time_left
+	zone._on_body_entered(player)
+	check(timer.time_left <= first_time, "Repeated entry does not restart death timer")
+	timer.stop()
+	other.free()
+	player.free()
+	zone.queue_free()
+	await process_frame
+
+func _test_coins() -> void:
+	var level := preload("res://scenes/game.tscn").instantiate()
+	root.add_child(level)
+	await process_frame
+	var coins := level.find_children("*", "Area2D", true, false)
+	var coin: Area2D = null
+	for candidate in coins:
+		if candidate.name == "Coin" and candidate.has_method("_on_body_entered"):
+			coin = candidate
+			break
+	check(coin != null, "Game level contains a collectible coin")
+	if coin != null:
+		var manager := coin.get_node_or_null("%GameManager")
+		check(manager != null, "Coin can reach game manager")
+		if manager != null:
+			var initial_score: int = manager.score
+			var other := Node2D.new()
+			coin._on_body_entered(other)
+			check(manager.score == initial_score, "Non-player cannot collect coin")
+			var player := Node2D.new()
+			player.add_to_group("player")
+			coin._on_body_entered(player)
+			check(manager.score == initial_score + 1, "Player collects exactly one point")
+			coin._on_body_entered(player)
+			check(manager.score == initial_score + 1, "Coin cannot be collected twice")
+			player.free()
+			other.free()
+	level.queue_free()
+	await process_frame
