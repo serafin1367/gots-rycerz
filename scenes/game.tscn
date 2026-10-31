@@ -353,16 +353,6 @@ limit_bottom = 90
 limit_smoothed = true
 position_smoothing_enabled = true
 
-[node name="LabelScore" type="Label" parent="Player/Camera2D"]
-unique_name_in_owner = true
-offset_left = -89.0
-offset_top = -64.0
-offset_right = -34.0
-offset_bottom = -45.0
-theme_override_fonts/font = ExtResource("8_gee14")
-theme_override_font_sizes/font_size = 8
-text = "0 Coins
-"
 
 [node name="KillZone" parent="." instance=ExtResource("5_iywne")]
 

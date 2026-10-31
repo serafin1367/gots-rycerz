@@ -78,6 +78,8 @@ func _test_coins() -> void:
 			player.add_to_group("player")
 			coin._on_body_entered(player)
 			check(manager.score == initial_score + 1, "Player collects exactly one point")
+			var level_player := level.get_node("Player")
+			check(level_player.coin_label.text == "Coins: %d" % manager.score, "HUD coin counter updates after pickup")
 			coin._on_body_entered(player)
 			check(manager.score == initial_score + 1, "Coin cannot be collected twice")
 			player.free()
@@ -91,6 +93,8 @@ func _test_health() -> void:
 	await process_frame
 	check(player.health == 3 and not player.dead, "Player begins with three HP")
 	check(player.heart_labels.size() == 3, "HUD shows three hearts")
+	check(player.coin_label != null and player.coin_label.text == "Coins: 0", "HUD starts with zero coins")
+	check(player.coin_label.get_parent() == player.heart_labels[2].get_parent(), "Coin counter is beside hearts")
 	check(player.heart_labels[0].text == "♥", "HUD uses heart symbols")
 	check(player.audio_hurt.stream != null, "Damage sound resource is loaded")
 	check(player.take_damage(), "First damage is accepted")

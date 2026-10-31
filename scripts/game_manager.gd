@@ -1,9 +1,11 @@
 extends Node
 
-var score = 0
-@onready var label_score: Label = %LabelScore
+var score: int = 0
+@onready var player: CharacterBody2D = $"../Player"
 
+func _ready() -> void:
+	player.update_coin_count(score)
 
-func add_point():
+func add_point() -> void:
 	score += 1
-	label_score.text = str(score) + " Coins"	
+	player.update_coin_count(score)

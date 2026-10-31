@@ -17,6 +17,7 @@ var health: int = 3
 var invulnerability_left: float = 0.0
 var dead := false
 var heart_labels: Array[Label] = []
+var coin_label: Label
 
 func _ready() -> void:
 	add_to_group("player")
@@ -56,6 +57,16 @@ func _create_hearts_hud() -> void:
 		heart.add_theme_font_size_override("font_size", 24)
 		row.add_child(heart)
 		heart_labels.append(heart)
+	coin_label = Label.new()
+	coin_label.name = "CoinCounter"
+	coin_label.text = "Coins: 0"
+	coin_label.add_theme_font_size_override("font_size", 16)
+	coin_label.add_theme_color_override("font_color", Color("#f7d45c"))
+	row.add_child(coin_label)
+
+func update_coin_count(count: int) -> void:
+	if coin_label != null:
+		coin_label.text = "Coins: %d" % count
 
 func _update_health_display() -> void:
 	for i in range(heart_labels.size()):
