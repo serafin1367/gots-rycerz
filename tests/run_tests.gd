@@ -16,7 +16,6 @@ func check(condition: bool, message: String) -> void:
 
 func _run_tests() -> void:
 	await _test_player()
-	await _test_attack()
 	await _test_health()
 	await _test_damage_zone()
 	await _test_kill_zone()
@@ -133,27 +132,4 @@ func _test_damage_zone() -> void:
 	other.free()
 	player.queue_free()
 	zone.queue_free()
-	await process_frame
-
-func _test_attack() -> void:
-	var player := preload("res://scenes/player.tscn").instantiate()
-	root.add_child(player)
-	await process_frame
-	check(player.attack_sprite.sprite_frames.get_frame_count("slash") == 6, "Sword attack has six frames")
-	check(player.begin_attack(), "Player can start sword attack")
-	check(player.attacking and player.attack_sprite.visible, "Attack animation is visible")
-	check(not player.begin_attack(), "Attack cannot restart until completed")
-	player._process_attack(0.5)
-	check(not player.attacking and player.animated_sprite.visible, "Attack restores normal sprite")
-	player.animated_sprite.flip_h = true
-	player._update_attack_direction()
-	check(player.attack_area.position.x < 0, "Sword hitbox follows facing direction")
-	var slime := preload("res://scenes/slime.tscn").instantiate()
-	root.add_child(slime)
-	await process_frame
-	check(slime.is_in_group("enemies"), "Slime belongs to enemy group")
-	slime.take_damage(1)
-	check(slime.health == 0, "Sword damage can defeat slime")
-	slime.queue_free()
-	player.queue_free()
 	await process_frame

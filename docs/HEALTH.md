@@ -9,7 +9,3 @@ HUD używa trzech serc w lewym górnym rogu ekranu. Czerwone serce oznacza aktyw
 Licznik monet (`Coins: N`) znajduje się po prawej stronie serc, w tym samym rzędzie HUD. GameManager aktualizuje licznik po zebraniu monety. Stary napis przy kamerze został usunięty.
 
 HUD graficzny: dwa warianty pixel-art (`assets/ui/heart_full.png`, `assets/ui/heart_empty.png`) są używane w `TextureRect`. Ikona monety pochodzi z istniejącego atlasu `assets/sprites/coin.png` (pierwsza klatka 16×16), a liczba monet jest wyświetlana bez prefiksu `Coins:`. Tekstury są wyświetlane filtrowaniem nearest.
-
-## Atak mieczem (prototyp)
-
-Przycisk `J` rozpoczyna sześcioklatkową animację slash z pliku `assets/sprites/knight_attack_strip.png` (klatki 64×64). Atak trwa 0,48 sekundy, zaś okno obrażeń 0,12–0,36 sekundy. Hitbox przesuwa się wraz z kierunkiem postaci i uderza przeciwników tylko raz na zamach. Slime ma domyślnie jeden punkt życia. Grafika ataku jest prototypowa, niezależna od starego arkusza postaci. Po ukończeniu ataku przywracana jest oryginalna animacja.

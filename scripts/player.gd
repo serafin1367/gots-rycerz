@@ -5,8 +5,6 @@ signal health_changed(current: int, maximum: int)
 const SPEED = 130.0
 const JUMP_VELOCITY = -300.0
 const DECELERATION = 900.0
-const ATTACK_STRIP = preload("res://assets/sprites/knight_attack_strip.png")
-const ATTACK_DURATION = 0.48
 
 @export_range(1, 20) var max_health: int = 3
 @export var invulnerability_seconds: float = 1.2
@@ -24,16 +22,10 @@ const COIN_SHEET = preload("res://assets/sprites/coin.png")
 
 var heart_icons: Array[TextureRect] = []
 var coin_label: Label
-var attack_sprite: AnimatedSprite2D
-var attack_area: Area2D
-var attack_elapsed := 0.0
-var attacking := false
-var hit_targets: Array[Node] = []
 
 func _ready() -> void:
 	add_to_group("player")
 	health = max_health
-	_create_attack_components()
 	_create_hearts_hud()
 	_update_health_display()
 	health_changed.emit(health, max_health)
@@ -51,75 +43,6 @@ func take_damage(amount: int = 1) -> bool:
 		invulnerability_left = invulnerability_seconds
 		animated_sprite.play("hit")
 	return true
-
-func _create_attack_components() -> void:
-	attack_sprite = AnimatedSprite2D.new()
-	attack_sprite.name = "AttackSprite"
-	attack_sprite.position = Vector2(0, -12)
-	attack_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	var frames := SpriteFrames.new()
-	frames.add_animation("slash")
-	frames.set_animation_speed("slash", 12.5)
-	frames.set_animation_loop("slash", false)
-	for i in range(6):
-		var frame := AtlasTexture.new()
-		frame.atlas = ATTACK_STRIP
-		frame.region = Rect2(i * 64, 0, 64, 64)
-		frames.add_frame("slash", frame)
-	attack_sprite.sprite_frames = frames
-	attack_sprite.visible = false
-	add_child(attack_sprite)
-	attack_area = Area2D.new()
-	attack_area.name = "SwordHitbox"
-	attack_area.collision_layer = 0
-	attack_area.collision_mask = 1
-	attack_area.monitoring = true
-	attack_area.monitorable = false
-	var collision := CollisionShape2D.new()
-	var shape := RectangleShape2D.new()
-	shape.size = Vector2(27, 24)
-	collision.shape = shape
-	attack_area.add_child(collision)
-	add_child(attack_area)
-	_update_attack_direction()
-
-func _update_attack_direction() -> void:
-	var facing := -1 if animated_sprite.flip_h else 1
-	if attack_sprite != null:
-		attack_sprite.flip_h = facing < 0
-	if attack_area != null:
-		attack_area.position = Vector2(21 * facing, -11)
-
-func begin_attack() -> bool:
-	if dead or attacking:
-		return false
-	attacking = true
-	attack_elapsed = 0.0
-	hit_targets.clear()
-	animated_sprite.visible = false
-	attack_sprite.visible = true
-	_update_attack_direction()
-	attack_sprite.play("slash")
-	return true
-
-func _process_attack(delta: float) -> void:
-	if not attacking:
-		return
-	attack_elapsed += delta
-	if attack_elapsed >= 0.12 and attack_elapsed <= 0.36:
-		_apply_sword_hit()
-	if attack_elapsed >= ATTACK_DURATION:
-		attacking = false
-		attack_sprite.stop()
-		attack_sprite.visible = false
-		animated_sprite.visible = true
-
-func _apply_sword_hit() -> void:
-	for area in attack_area.get_overlapping_areas():
-		var target := area.get_parent()
-		if target.is_in_group("enemies") and not hit_targets.has(target) and target.has_method("take_damage"):
-			hit_targets.append(target)
-			target.take_damage(1)
 
 func _create_hearts_hud() -> void:
 	var canvas := CanvasLayer.new()
@@ -188,9 +111,6 @@ func current_scene_is_available() -> bool:
 func _physics_process(delta: float) -> void:
 	if dead:
 		return
-	if Input.is_action_just_pressed("attack"):
-		begin_attack()
-	_process_attack(delta)
 	if invulnerability_left > 0.0:
 		invulnerability_left = maxf(invulnerability_left - delta, 0.0)
 		animated_sprite.modulate = Color(1.0, 0.5, 0.5) if int(invulnerability_left * 10.0) % 2 == 0 else Color.WHITE
@@ -211,9 +131,6 @@ func _physics_process(delta: float) -> void:
 		animated_sprite.flip_h = true
 	elif direction > 0:
 		animated_sprite.flip_h = false
-
-	if not attacking:
-		_update_attack_direction()
 
 	if invulnerability_left > maxf(invulnerability_seconds - 0.25, 0.0):
 		animated_sprite.play("hit")
