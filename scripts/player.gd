@@ -16,7 +16,11 @@ const DECELERATION = 900.0
 var health: int = 3
 var invulnerability_left: float = 0.0
 var dead := false
-var heart_labels: Array[Label] = []
+const HEART_FULL = preload("res://assets/ui/heart_full.png")
+const HEART_EMPTY = preload("res://assets/ui/heart_empty.png")
+const COIN_SHEET = preload("res://assets/sprites/coin.png")
+
+var heart_icons: Array[TextureRect] = []
 var coin_label: Label
 
 func _ready() -> void:
@@ -51,26 +55,40 @@ func _create_hearts_hud() -> void:
 	row.add_theme_constant_override("separation", 3)
 	canvas.add_child(row)
 	for i in range(max_health):
-		var heart := Label.new()
+		var heart := TextureRect.new()
 		heart.name = "Heart%d" % (i + 1)
-		heart.text = "♥"
-		heart.add_theme_font_size_override("font_size", 24)
+		heart.custom_minimum_size = Vector2(24, 24)
+		heart.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		heart.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		heart.texture = HEART_FULL
 		row.add_child(heart)
-		heart_labels.append(heart)
+		heart_icons.append(heart)
+
+	var coin_icon := TextureRect.new()
+	coin_icon.name = "CoinIcon"
+	coin_icon.custom_minimum_size = Vector2(20, 24)
+	coin_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	coin_icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	var coin_frame := AtlasTexture.new()
+	coin_frame.atlas = COIN_SHEET
+	coin_frame.region = Rect2(0, 0, 16, 16)
+	coin_icon.texture = coin_frame
+	row.add_child(coin_icon)
+
 	coin_label = Label.new()
 	coin_label.name = "CoinCounter"
-	coin_label.text = "Coins: 0"
+	coin_label.text = "0"
 	coin_label.add_theme_font_size_override("font_size", 16)
 	coin_label.add_theme_color_override("font_color", Color("#f7d45c"))
 	row.add_child(coin_label)
 
 func update_coin_count(count: int) -> void:
 	if coin_label != null:
-		coin_label.text = "Coins: %d" % count
+		coin_label.text = str(count)
 
 func _update_health_display() -> void:
-	for i in range(heart_labels.size()):
-		heart_labels[i].add_theme_color_override("font_color", Color("#ed344f") if i < health else Color("#4b4653"))
+	for i in range(heart_icons.size()):
+		heart_icons[i].texture = HEART_FULL if i < health else HEART_EMPTY
 
 func _die() -> void:
 	if dead:
