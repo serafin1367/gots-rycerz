@@ -7,15 +7,23 @@ const COIN = preload("res://scenes/coin.tscn")
 const SLIME = preload("res://scenes/slime.tscn")
 const PORTAL_SCRIPT = preload("res://scripts/level_portal.gd")
 const TILE_SIZE := 16
-const GRASS := Vector2i(0, 0)
-const ROCK_A := Vector2i(1, 0)
-const ROCK_B := Vector2i(1, 1)
-const DIRT := Vector2i(0, 1)
+const CATALOG = preload("res://scripts/world_tile_catalog.gd")
+var GRASS: Vector2i
+var ROCK_A: Vector2i
+var ROCK_B: Vector2i
+var DIRT: Vector2i
 
 var terrain: TileMapLayer
 var background: TileMapLayer
 
 func _ready() -> void:
+	GRASS = CATALOG.find_tile("grass_top")
+	ROCK_A = CATALOG.find_tile("rock_a")
+	ROCK_B = CATALOG.find_tile("rock_b")
+	DIRT = CATALOG.find_tile("dirt")
+	if GRASS.x < 0 or ROCK_A.x < 0 or ROCK_B.x < 0 or DIRT.x < 0:
+		push_error("Required terrain tiles missing in catalog")
+		return
 	var tileset := TileSet.new()
 	tileset.tile_size = Vector2i(TILE_SIZE, TILE_SIZE)
 	var source := TileSetAtlasSource.new()

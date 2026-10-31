@@ -1,0 +1,263 @@
+{
+  "schema_version": 1,
+  "atlas": "res://assets/sprites/world_tileset.png",
+  "tile_size": 16,
+  "source_id": 0,
+  "coordinate_system": "atlas grid, zero-based (x,y)",
+  "policy": "Only confirmed entries with collision solid may be used for physical terrain; probable and unknown entries must be reviewed before gameplay behavior is assigned.",
+  "tiles": [
+    {
+      "id": "grass_top",
+      "atlas": [
+        0,
+        0
+      ],
+      "category": "terrain_surface",
+      "collision": "solid",
+      "confidence": "confirmed",
+      "notes": "Podstawowa trawa; powierzchnia ruchu rycerza"
+    },
+    {
+      "id": "rock_a",
+      "atlas": [
+        1,
+        0
+      ],
+      "category": "terrain_fill",
+      "collision": "solid",
+      "confidence": "confirmed",
+      "notes": "Skała pod trawą"
+    },
+    {
+      "id": "dirt",
+      "atlas": [
+        0,
+        1
+      ],
+      "category": "terrain_fill",
+      "collision": "solid",
+      "confidence": "confirmed",
+      "notes": "Brązowa ziemia pod trawą"
+    },
+    {
+      "id": "rock_b",
+      "atlas": [
+        1,
+        1
+      ],
+      "category": "terrain_fill",
+      "collision": "solid",
+      "confidence": "confirmed",
+      "notes": "Drugi wariant skały"
+    },
+    {
+      "id": "sand_top",
+      "atlas": [
+        2,
+        0
+      ],
+      "category": "terrain_variant",
+      "collision": "unknown",
+      "confidence": "probable",
+      "notes": "Jasny wariant górnego kafelka"
+    },
+    {
+      "id": "sand_fill",
+      "atlas": [
+        2,
+        1
+      ],
+      "category": "terrain_variant",
+      "collision": "unknown",
+      "confidence": "probable",
+      "notes": "Jasne wypełnienie"
+    },
+    {
+      "id": "gray_rock_top",
+      "atlas": [
+        3,
+        0
+      ],
+      "category": "terrain_variant",
+      "collision": "unknown",
+      "confidence": "probable",
+      "notes": "Szary kamienny wariant"
+    },
+    {
+      "id": "gray_rock_fill",
+      "atlas": [
+        3,
+        1
+      ],
+      "category": "terrain_variant",
+      "collision": "unknown",
+      "confidence": "probable",
+      "notes": "Szare wypełnienie"
+    },
+    {
+      "id": "yellow_top",
+      "atlas": [
+        4,
+        0
+      ],
+      "category": "terrain_variant",
+      "collision": "unknown",
+      "confidence": "probable",
+      "notes": "Żółty wariant powierzchni"
+    },
+    {
+      "id": "pink_top",
+      "atlas": [
+        5,
+        0
+      ],
+      "category": "terrain_variant",
+      "collision": "unknown",
+      "confidence": "probable",
+      "notes": "Różowy wariant powierzchni"
+    },
+    {
+      "id": "icy_top",
+      "atlas": [
+        6,
+        0
+      ],
+      "category": "terrain_variant",
+      "collision": "unknown",
+      "confidence": "probable",
+      "notes": "Cyjanowy wariant powierzchni"
+    },
+    {
+      "id": "icy_fill",
+      "atlas": [
+        6,
+        1
+      ],
+      "category": "terrain_variant",
+      "collision": "unknown",
+      "confidence": "probable",
+      "notes": "Cyjanowy blok podłoża"
+    },
+    {
+      "id": "question_block",
+      "atlas": [
+        0,
+        2
+      ],
+      "category": "interactive_unknown",
+      "collision": "unknown",
+      "confidence": "probable",
+      "notes": "Blok ze znakiem zapytania; funkcja nieznana"
+    },
+    {
+      "id": "alert_block",
+      "atlas": [
+        1,
+        2
+      ],
+      "category": "interactive_unknown",
+      "collision": "unknown",
+      "confidence": "probable",
+      "notes": "Blok ze znakiem wykrzyknika; funkcja nieznana"
+    },
+    {
+      "id": "tree_green",
+      "atlas": [
+        0,
+        3
+      ],
+      "category": "decoration",
+      "collision": "none",
+      "confidence": "probable",
+      "notes": "Zielone drzewo; element większy niż jeden kafelek"
+    },
+    {
+      "id": "bush_green",
+      "atlas": [
+        1,
+        5
+      ],
+      "category": "decoration",
+      "collision": "none",
+      "confidence": "probable",
+      "notes": "Krzew zielony"
+    },
+    {
+      "id": "palm_foliage",
+      "atlas": [
+        3,
+        5
+      ],
+      "category": "decoration",
+      "collision": "none",
+      "confidence": "probable",
+      "notes": "Liście palmy; element złożony"
+    },
+    {
+      "id": "yellow_tree",
+      "atlas": [
+        5,
+        3
+      ],
+      "category": "decoration",
+      "collision": "none",
+      "confidence": "probable",
+      "notes": "Żółte drzewo; element złożony"
+    },
+    {
+      "id": "mushroom_red",
+      "atlas": [
+        7,
+        5
+      ],
+      "category": "decoration",
+      "collision": "none",
+      "confidence": "probable",
+      "notes": "Czerwony grzyb"
+    },
+    {
+      "id": "mushroom_pink",
+      "atlas": [
+        7,
+        7
+      ],
+      "category": "decoration",
+      "collision": "none",
+      "confidence": "probable",
+      "notes": "Różowy grzyb"
+    },
+    {
+      "id": "wood_structure",
+      "atlas": [
+        8,
+        3
+      ],
+      "category": "object_unknown",
+      "collision": "unknown",
+      "confidence": "probable",
+      "notes": "Drewniany element konstrukcyjny"
+    },
+    {
+      "id": "wave_blue",
+      "atlas": [
+        4,
+        9
+      ],
+      "category": "water_detail",
+      "collision": "none",
+      "confidence": "confirmed",
+      "notes": "Kafelek związany z wodą; NIE stosować jako jednolitego nieba"
+    },
+    {
+      "id": "wave_variant",
+      "atlas": [
+        4,
+        12
+      ],
+      "category": "water_detail",
+      "collision": "none",
+      "confidence": "confirmed",
+      "notes": "Wariant przejścia wodnego; nie stosować jako jednolitego tła"
+    }
+  ]
+}
