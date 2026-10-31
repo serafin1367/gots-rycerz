@@ -7,3 +7,6 @@ Portal na obu poziomach używa dziewięciu klatek animacji po 32×64 px z `asset
 
 ## Zapisywanie postępu
 Postęp gry jest zapisywany w `user://rycerz_progress.cfg`. Przy rozpoczęciu nowej gry zapis jest resetowany do pierwszego poziomu, a po przejściu przez portal odblokowywany jest kolejny (lub zachowany ostatni, jeśli nie ma kolejnych). W menu głównym przycisk „Kontynuuj” jest niedostępny bez poprawnego zapisu. Kontynuacja uruchamia zapisany poziom od początku; nie zachowuje aktualnej pozycji rycerza, zdrowia ani monet. Błędne i niekompatybilne pliki zapisu są ignorowane.
+
+## Poziom 2 — Zielone Wyspy
+Nowa plansza obejmuje cztery wyspy oddzielone przepaściami, pomosty skokowe, 12 monet, trzech przeciwników slime, wodne tło i końcowy animowany portal. Układ zachowuje kolorystykę pierwszej planszy i korzysta z oryginalnego zasobu `platform_green.tscn`. Punkty i serca korzystają z istniejącego HUD-u, a strefa śmierci działa pod wyspami. Przejście do poziomu 2 wykorzystuje istniejący GameFlow.

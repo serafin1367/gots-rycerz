@@ -63,6 +63,13 @@ func _run() -> void:
 	root.add_child(level)
 	await process_frame
 	var portal := level.get_node_or_null("LevelPortal") as Area2D
+	var manager := level.get_node_or_null("GameManager")
+	var coins := level.get_node_or_null("Coins")
+	var enemy_count := level.find_children("*", "AnimatedSprite2D", true, false).filter(func(n): return n.is_in_group("enemies")).size()
+	if manager == null or coins == null or coins.get_child_count() < 10 or enemy_count < 3:
+		push_error("Level 2 needs manager, at least ten coins and three enemies")
+		quit(1)
+		return
 	if not level.has_node("Player") or portal == null or portal.collision_mask != 2:
 		push_error("Level 2 must have player and portal")
 		quit(1)

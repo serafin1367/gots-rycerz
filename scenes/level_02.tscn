@@ -1,4 +1,66 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=6 format=3]
+
 [ext_resource type="Script" path="res://scripts/level_02.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/coin.tscn" id="3"]
+[ext_resource type="Script" path="res://scripts/game_manager.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/level_portal.gd" id="5"]
+
 [node name="Level02" type="Node2D"]
 script = ExtResource("1")
+
+[node name="Player" parent="." instance=ExtResource("2")]
+position = Vector2(38, 77)
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+zoom = Vector2(2.5, 2.5)
+position_smoothing_enabled = true
+limit_left = 0
+limit_right = 1024
+limit_bottom = 200
+
+[node name="GameManager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4")
+
+[node name="Coins" type="Node2D" parent="."]
+
+[node name="Coin01" parent="Coins" instance=ExtResource("3")]
+position = Vector2(96, 74)
+
+[node name="Coin02" parent="Coins" instance=ExtResource("3")]
+position = Vector2(154, 74)
+
+[node name="Coin03" parent="Coins" instance=ExtResource("3")]
+position = Vector2(255, 17)
+
+[node name="Coin04" parent="Coins" instance=ExtResource("3")]
+position = Vector2(326, 75)
+
+[node name="Coin05" parent="Coins" instance=ExtResource("3")]
+position = Vector2(406, 15)
+
+[node name="Coin06" parent="Coins" instance=ExtResource("3")]
+position = Vector2(476, 31)
+
+[node name="Coin07" parent="Coins" instance=ExtResource("3")]
+position = Vector2(524, 4)
+
+[node name="Coin08" parent="Coins" instance=ExtResource("3")]
+position = Vector2(591, 75)
+
+[node name="Coin09" parent="Coins" instance=ExtResource("3")]
+position = Vector2(647, -4)
+
+[node name="Coin10" parent="Coins" instance=ExtResource("3")]
+position = Vector2(721, 31)
+
+[node name="Coin11" parent="Coins" instance=ExtResource("3")]
+position = Vector2(809, 34)
+
+[node name="Coin12" parent="Coins" instance=ExtResource("3")]
+position = Vector2(941, 74)
+
+[node name="LevelPortal" type="Area2D" parent="."]
+position = Vector2(962, 62)
+script = ExtResource("5")
