@@ -36,13 +36,13 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 
 ## Rekomendowana kolejność prac
 1. Przyjąć weryfikację sceny testowej TileMapLayer zgłoszoną przez użytkownika; osobno potwierdzić zachowanie portalu i wykonać smoke test pozostałych mechanik, jeśli nie były sprawdzane.
-2. Ustalić docelowy sposób używania TileMapLayer w prawdziwych poziomach i schemat warstw: Sky / Background / Water / Terrain / Decoration / Objects.
+2. Projektować TileMapLayer jako fundament proceduralnego świata; doprecyzować podział na regiony/chunki, trwałość mapy i schemat warstw: Sky / Background / Water / Terrain / Decoration / Objects.
 3. Rozszerzać katalog atlasu tylko o zweryfikowane pozycje; najpierw grunt i krawędzie, potem dekoracje i interakcje.
 4. Zrobić niewielki, odtwarzalny generator terenu TileMapLayer z testami, nie naruszając działających poziomów.
 5. Po testach migrować wybrany fragment poziomu 2; zsynchronizować dokumentację i wersje środowiska.
 
 ## Nierozstrzygnięte pytania projektowe
-- Czy pełna gra ma pozostać platformówką 2D z osobnymi poziomami, czy powstać większy, proceduralny świat?
+- **Preferowany kierunek (wstępnie, 2026-11-01):** większy, proceduralnie generowany świat zamiast klasycznej platformówki z serią ręcznie tworzonych poziomów. Do doprecyzowania: świat ciągły czy regiony, sposób przemieszczania, generowanie i trwałość zmian. To preferencja, nie zatwierdzona szczegółowa specyfikacja.
 - Czy różne kolory podłoża to biomy, czy odmienne zasady fizyki?
 - Jak mają działać woda, bloki ?/!, dekoracje i elementy drewniane (kolizja/interakcja)?
 - Jaka wersja Godot jest docelowa dla developmentu i eksportu?
@@ -51,3 +51,4 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 - 2026-11-01: przegląd konfiguracji, logiki przepływu gry, gracza, monet, slime'ów, poziomu 2, sceny testowej TileMap i dokumentacji; zweryfikowano najnowszy commit i wynik CI. Bez zmian w mechanice gry.
 
 - 2026-11-01: użytkownik potwierdził, że scena testowa została zweryfikowana. Odnotowano weryfikację sceny TileMapLayer jako deklarację użytkownika; zakres szczegółowych testów interakcji pozostaje nieokreślony.
+- 2026-11-01: użytkownik wskazał wstępne preferowanie gry z generowanym światem. Kierunek zapisano bez przesądzania architektury szczegółowej.
