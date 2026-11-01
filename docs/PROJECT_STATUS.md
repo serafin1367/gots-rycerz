@@ -68,6 +68,11 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 - Poziom 2: 14 przygotowanych wysp o stałych szerokościach i przerwach (odstępy 28–43 px), 56 monet, 7 slime'ów; istniejące zasoby i stały seed. Kod generuje bryły z danych, ale nie losuje projektu.
 - Poziom 3: 16 zaplanowanych wysp, 64 monety i 9 slime'ów; stopniowanie sekcji przez szerokości i pozycje pomostów. Układ jest stały.
 - Poziom 1 nie został jeszcze przebudowany do pięciu minut; jego czas jest niezweryfikowany.
-- Następne priorytety: (1) pomiar czasów przejścia wszystkich trzech poziomów, (2) punkty kontrolne i ograniczenie frustracji po śmierci w dłuższych etapach, (3) różne rodzaje wyzwań zamiast samych powtarzalnych wysp i slime'ów, (4) dekoracje i tematy poziomów, (5) ekran zakończenia dema.
+- Następne priorytety: (1) pomiar czasów przejścia wszystkich trzech poziomów, (2) balans trudności przy restarcie całego poziomu po śmierci, (3) różne rodzaje wyzwań zamiast samych powtarzalnych wysp i slime'ów, (4) dekoracje i tematy poziomów, (5) ekran zakończenia dema.
 - Weryfikować w Godot manualnie osiągalność wszystkich pomostów i monet oraz czas przejścia. Testy CI sprawdzają tylko część właściwości i nie potwierdzają pięciominutowego tempa.
 - **Nadrzędne ustalenie:** najpierw dopracowane, stałe demo; proceduralny otwarty świat poza aktualnym zakresem.
+
+## Zasada śmierci — decyzja użytkownika 2026-11-01
+- Po śmierci rycerz **zaczyna bieżący poziom od początku**. Nie dodajemy checkpointów.
+- Cel około 5 minut na poziom pozostaje; poziomy 2 i 3 trzeba projektować tak, by pełny restart był wyzwaniem, ale nie wynikał z nieczytelnych lub nieuczciwych przeszkód.
+- Obecne `scripts/player.gd` już restartuje bieżącą scenę po śmierci; `kill_zone` również wymaga kontroli w testach gry. Nie jest potrzebna zmiana modelu zapisu postępów: zapis nadal wskazuje odblokowany poziom, a nie miejsce w jego obrębie.
