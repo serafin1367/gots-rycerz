@@ -66,7 +66,7 @@ func _run() -> void:
 	var manager := level.get_node_or_null("GameManager")
 	var coins := level.get_node_or_null("Coins")
 	var enemy_count := level.find_children("*", "AnimatedSprite2D", true, false).filter(func(n): return n.is_in_group("enemies")).size()
-	if manager == null or coins == null or coins.get_child_count() < 10 or enemy_count < 3 or level.islands.size() != 5:
+	if manager == null or coins == null or coins.get_child_count() < 10 or enemy_count < 3 or level.islands.size() != 14:
 		push_error("Level 2 needs manager, at least ten coins and three enemies")
 		quit(1)
 		return
@@ -103,5 +103,18 @@ func _run() -> void:
 			quit(1)
 			return
 	level.queue_free()
-	print("PASS: main menu and second level portal")
+	await process_frame
+	var finale: Node2D = load("res://scenes/level_03.tscn").instantiate()
+	root.add_child(finale)
+	await process_frame
+	if finale.islands.size() != 16 or finale.get_node("Coins").get_child_count() != 64:
+		push_error("Final demo level needs 16 fixed islands and 64 coins")
+		quit(1)
+		return
+	if finale.get_node_or_null("LevelPortal") == null:
+		push_error("Final demo level needs a completion portal")
+		quit(1)
+		return
+	finale.queue_free()
+	print("PASS: menu and three demo levels")
 	quit(0)
