@@ -86,3 +86,9 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 - Testy `tests/game_flow_test.gd` rozszerzono o liczbę wysp, monet, wrogów, podwyższone trasy i teren TileMapLayer. Status CI ustalić po zakończeniu pipeline.
 - **Niezweryfikowane:** pełne przejście w edytorze Godot, osiągalność bonusów i skoków, wygląd styku kolizji/kafelków oraz cel 5 minut. Nie nazywać poziomu w pełni dopracowanym ani certyfikowanym czasowo przed playtestem.
 - Brak checkpointów — po śmierci restart całego poziomu, zgodnie z decyzją użytkownika.
+
+## Playtest poziomu 2 — 2026-11-01
+- Użytkownik potwierdził, że poziom 2 da się ukończyć.
+- Użytkownik ocenił aktualny poziom jako monotonny. **To otwarty problem projektowy**, nie brak grywalności.
+- Następny priorytet: zastąpić powtarzalny schemat wyspa–monety–slime pięcioma odmiennymi sekwencjami (polana, przeprawy, ruiny, trasa górna, finał), z różną geometrią, układem nagród i tempem walki. Projekt do implementacji i manualnej oceny.
+- Brak checkpointów i restart całego poziomu po śmierci pozostają wymaganiami.
