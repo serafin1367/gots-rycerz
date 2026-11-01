@@ -130,3 +130,10 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 ## Potwierdzenie testu mostu — 2026-11-01
 - Użytkownik potwierdził podczas rozgrywki: **„znikający most działa”**. Mechanikę zapadania się mostu w poziomie 2 uznajemy za działającą według testu użytkownika.
 - Nie oznacza to pomiaru czasu przejścia pięciominutowego poziomu ani potwierdzenia każdej sytuacji brzegowej. Zachowujemy przeprawę i nie zmieniamy jej bez uzasadnienia.
+
+## Kierunek projektowania zatwierdzony — 2026-11-01
+- Użytkownik potwierdził wzorzec: **pierwsze Super Mario Bros. (NES, 1985)** jako inspiracja projektem rozgrywki 2D, nie jako źródło do kopiowania poziomów ani grafik.
+- Rycerz zachowuje własny średniowieczny świat, własną grafikę, postać, przeciwników i mechaniki.
+- Priorytet: zróżnicowana, czytelna geometria poziomów (schody, przepaście, podwyższenia), elementy interaktywne, sekrety i nagrody za eksplorację oraz sekwencje uczące mechaniki przed trudniejszym jej wykorzystaniem.
+- Poziom 2: zachować pozytywnie ocenioną przeprawę z ruchomą platformą i przetestowany zapadający się most; urozmaicać otoczenie bez samego przedłużania monotonnej trasy.
+- Nadal: trzy stałe poziomy demo, docelowo około 5 min każdy, pełny restart bieżącego poziomu po śmierci, bez checkpointów. Czas wymaga zmierzenia w grze.
