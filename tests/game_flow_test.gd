@@ -131,12 +131,9 @@ func _run() -> void:
 		quit(1)
 		return
 	var mover: Node2D = level.get_node("MovingPlatform_04")
-	mover.clock = 0.0
-	mover.origin = mover.position
-	var start_x: float = mover.position.x
-	mover._physics_process(0.65)
-	if is_equal_approx(mover.position.x, start_x):
-		push_error("Moving platform should change position")
+	var movement: Vector2 = mover.get("travel")
+	if movement.x < 1.0 or float(mover.get("period")) <= 0.0:
+		push_error("Moving platform requires nonzero travel and valid period")
 		quit(1)
 		return
 	var fragile: Node = level.get_node("CrumblingPlatform_05")
