@@ -2,9 +2,14 @@ extends AnimatableBody2D
 ## Platforma zapada się po wejściu rycerza, a potem wraca.
 @export var collapse_delay := 0.55
 @export var respawn_delay := 2.0
+@export var bridge_style := false
+var initial_collision_layer := 1
 var triggered := false
 
 func _ready() -> void:
+	initial_collision_layer = collision_layer
+	if bridge_style:
+		_add_bridge_planks()
 	var detector := Area2D.new()
 	detector.name = "StepDetector"
 	detector.collision_layer = 0
@@ -32,6 +37,27 @@ func _on_body_entered(body: Node2D) -> void:
 	if not is_inside_tree():
 		return
 	visible = true
-	collision_layer = 1
+	collision_layer = initial_collision_layer
 	modulate = Color.WHITE
 	triggered = false
+
+func _add_bridge_planks() -> void:
+	# Własna dekoracja drewnianych desek: bez używania niepotwierdzonych kafelków atlasu.
+	for i in range(3):
+		var plank := Polygon2D.new()
+		plank.name = "WoodPlank_%d" % i
+		plank.z_index = 2
+		plank.color = Color("#9e6840") if i % 2 == 0 else Color("#b7814d")
+		var x := -15.0 + float(i) * 10.0
+		plank.polygon = PackedVector2Array([
+			Vector2(x, -5.0), Vector2(x + 9.0, -5.0),
+			Vector2(x + 9.0, 0.0), Vector2(x, 0.0)
+		])
+		add_child(plank)
+	var stripe := Line2D.new()
+	stripe.name = "BridgeRope"
+	stripe.z_index = 3
+	stripe.width = 1.0
+	stripe.default_color = Color("#e6c48b")
+	stripe.points = PackedVector2Array([Vector2(-16, -6), Vector2(16, -6)])
+	add_child(stripe)
