@@ -104,7 +104,8 @@ func _run() -> void:
 		return
 	var left_edge: float = level.islands[6].y
 	var right_edge: float = level.islands[7].x
-	if shuttle.position.x <= left_edge or shuttle.position.x >= right_edge or absf((shuttle.get("travel") as Vector2).x - 54.0) > 0.01:
+	var shuttle_travel: Vector2 = shuttle.get("travel")
+	if shuttle.position.x <= left_edge or shuttle.position.x >= right_edge or absf(shuttle_travel.x - 54.0) > 0.01:
 		push_error("Gap shuttle must travel inside the crossing")
 		quit(1)
 		return
