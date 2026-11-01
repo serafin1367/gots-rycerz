@@ -8,18 +8,18 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 
 ## Potwierdzony stan kodu
 - Projekt Godot, scena startowa `scenes/main_menu.tscn`; w `project.godot` zadeklarowano funkcje `4.7`. CI korzysta z Godot 4.4.1 — zgodność należy monitorować.
-- `scripts/game_flow.gd`: dwa poziomy (`scenes/game.tscn`, `scenes/level_02.tscn`), pauza, restart, portale, przechodzenie między scenami oraz zapis postępu w `user://rycerz_progress.cfg`. Zapis obejmuje indeks poziomu i seed, ale nie pozycję gracza, HP ani monety.
+- `scripts/game_flow.gd`: trzy poziomy (`scenes/game.tscn`, `scenes/level_02.tscn`, `scenes/level_03.tscn`), pauza, restart, portale, przechodzenie między scenami oraz zapis postępu w `user://rycerz_progress.cfg`. Zapis obejmuje indeks poziomu i seed, ale nie pozycję gracza, HP ani monety.
 - `scripts/player.gd`: ruch, skok, trzy bazowe HP, czasowa nietykalność po trafieniu, HUD serc i monet, eksperymentalny atak mieczem klawiszem J.
 - `scripts/slime.gd`: przeciwnik o bazowym 1 HP, patrolowanie i przyjmowanie obrażeń.
 - `scripts/coin.gd` i `scripts/game_manager.gd`: zbieranie monet, odnajdowanie GameManager w przodkach sceny i aktualizowanie licznika.
-- `scripts/level_02.gd`: deterministyczny układ na podstawie `GameFlow.level_seed`; aktualnie `ISLAND_COUNT = 5`, po 3 monety na wyspę (15 monet) i przeciwnicy na wewnętrznych wyspach (3 slime'y); platformy nad lukami, portal, strefa śmierci. **Uwaga:** starszy `docs/GAME_FLOW.md` opisuje 4 wyspy i 12 monet — ten opis jest nieaktualny wobec kodu.
+- `scripts/level_02.gd`: ręcznie rozplanowana, stała plansza Zielone Wyspy: 14 wysp, 61 monet (56 na trasie + 5 bonusowych), 7 slime'ów, 13 mostków i 10 dodatkowych platform. Zróżnicowane wysokości, TileMapLayer z zatwierdzonymi kafelkami i osobne bryły kolizyjne. Starszy `docs/GAME_FLOW.md` jest nieaktualny.
 - `scenes/test_tilemap_level.tscn` + `scripts/test_tilemap_level.gd`: osobna scena testowa TileMapLayer, uruchamiana F6, z terenem, 6 monetami, jednym slime'em i portalem. Kolizje terenu realizują osobne `StaticBody2D`; nie jest to jeszcze pełny generator świata oparty na TileMap.
 - `assets/data/world_tile_catalog.json` + `scripts/world_tile_catalog.gd`: wspólne źródło współrzędnych atlasu `world_tileset.png` (kafelki 16×16). Domyślnie funkcja `find_tile` dopuszcza tylko wpisy ze statusem `confirmed`. Istnieje dokument `docs/WORLD_TILE_CATALOG.md`.
 - Dla nieba sceny testowej użyto jednolitego tła: kafelki wodne (4,9) i (4,12) dawały widoczne powtórzenia i nie powinny pełnić roli jednolitego nieba.
 - Istnieją skrypty testowe w `tests/` i workflow GitHub Actions. Dla commita `cf87e801` workflow „Godot tests” i „Game flow validation” miały status **success** (sprawdzone 2026-11-01). To potwierdza przejście CI, nie zastępuje manualnego testu rozgrywki i grafiki.
 
 ## Wnioski z przeglądu — nie mylić z potwierdzonymi awariami
-1. **P1: sprawdzić przejście od prototypu TileMap do właściwych poziomów.** Aktualna scena TileMap jest izolowanym poligonem testowym, a drugi poziom używa ręcznie rysowanych brył i platform. Potrzebna decyzja o docelowej reprezentacji terenu i stopniowej migracji.
+1. **P1: przeprowadzić test grywalności planszy 2.** Teren jest już rysowany przez TileMapLayer, natomiast kolizje realizują osobne bryły StaticBody2D. Należy sprawdzić ułożenie grafik względem powierzchni kolizji, osiągalność górnej ścieżki i czytelność podwyższeń.
 2. **P1: ustalić mapowanie całego atlasu.** Katalog jawnie rozróżnia `confirmed`, `probable`, `unknown`. Nie przypisywać automatycznie kolizji ani mechanik kafelkom niezweryfikowanym.
 3. **P1: manualny smoke test pozostałych mechanik.** Użytkownik potwierdził 2026-11-01 weryfikację sceny testowej TileMapLayer. Nie mamy osobnego potwierdzenia, że sprawdzono wszystkie interakcje (w szczególności portal), ani pełnej ścieżki menu, kontynuacji, obu poziomów, zapisu/odczytu seeda, monet, obrażeń, ataku J, śmierci/restartu i pauzy. Tych testów nie oznaczamy jako zaliczonych bez potwierdzenia.
 4. **P2: zgodność wersji Godot.** `project.godot` deklaruje cechy 4.7, a `.github/workflows/godot-tests.yml` używa 4.4.1. Mimo zielonego CI należy ustalić docelową wersję edytora i wyrównać konfiguracje.
@@ -76,3 +76,13 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 - Po śmierci rycerz **zaczyna bieżący poziom od początku**. Nie dodajemy checkpointów.
 - Cel około 5 minut na poziom pozostaje; poziomy 2 i 3 trzeba projektować tak, by pełny restart był wyzwaniem, ale nie wynikał z nieczytelnych lub nieuczciwych przeszkód.
 - Obecne `scripts/player.gd` już restartuje bieżącą scenę po śmierci; `kill_zone` również wymaga kontroli w testach gry. Nie jest potrzebna zmiana modelu zapisu postępów: zapis nadal wskazuje odblokowany poziom, a nie miejsce w jego obrębie.
+
+## Zielone Wyspy — przebudowa 2026-11-01
+- Plik: `scripts/level_02.gd`, scena: `scenes/level_02.tscn` (bez zmian w korzeniu sceny).
+- Zastąpiono pozorną losowość świadomie dobranym zestawem szerokości 14 wysp, wysokości (-16 / 0 / +16) i odstępów 32 px. To stała plansza demo, nie otwarty generator świata.
+- Dla terenu używane są tylko potwierdzone pozycje atlasu: `grass_top`, `rock_a`, `rock_b`, `dirt`. Użyty jest `TileMapLayer`; osobne `StaticBody2D` zapewniają fizykę lądu. Nie nadano właściwości fizycznych niepewnym kafelkom.
+- Dodano układ kolorystyczny nieba, odległych wysp, morza, chmur i wodospadów, dekoracyjne kępki traw i słupki informacyjne (figury Polygon2D, bez kolizji). Nie są to nowe ręcznie malowane sprite'y.
+- 13 pomostów między wyspami, 10 dodatkowych platform wysokiej trasy na 5 wyspach; 61 monet (w tym 5 nagród za ścieżkę górną) i 7 slime'ów na określonych wyspach. Portal końcowy, HUD, śmierć i restart korzystają z istniejących mechanik.
+- Testy `tests/game_flow_test.gd` rozszerzono o liczbę wysp, monet, wrogów, podwyższone trasy i teren TileMapLayer. Status CI ustalić po zakończeniu pipeline.
+- **Niezweryfikowane:** pełne przejście w edytorze Godot, osiągalność bonusów i skoków, wygląd styku kolizji/kafelków oraz cel 5 minut. Nie nazywać poziomu w pełni dopracowanym ani certyfikowanym czasowo przed playtestem.
+- Brak checkpointów — po śmierci restart całego poziomu, zgodnie z decyzją użytkownika.
