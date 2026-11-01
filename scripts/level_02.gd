@@ -206,6 +206,7 @@ func _make_crumbling_bridge() -> void:
 		segment.position = Vector2(left_edge + 16.0 + float(i) * 32.0, bridge_y)
 		segment.set("collapse_delay", 0.85 if i == 0 else 0.72)
 		segment.set("respawn_delay", 3.0)
+		segment.set("bridge_style", true)
 		add_child(segment)
 	# Ostrzegawcze oznaczenie tuż przed pierwszym segmentem.
 	_add_rect("CrumblingBridgeWarning", 3, Color("#f2b665"), left_edge - 27.0, island_tops[CRUMBLING_BRIDGE_INDEX] - 8.0, left_edge - 8.0, island_tops[CRUMBLING_BRIDGE_INDEX] - 4.0)
