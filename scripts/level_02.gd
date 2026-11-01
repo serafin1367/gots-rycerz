@@ -14,9 +14,7 @@ var generation_seed: int = 0
 var islands: Array[Vector2] = []
 
 func _ready() -> void:
-	generation_seed = GameFlow.level_seed
-	if generation_seed <= 0:
-		generation_seed = 1
+	generation_seed = 20261031 # Demo: ten sam przygotowany układ przy każdym uruchomieniu
 	var rng := RandomNumberGenerator.new()
 	rng.seed = generation_seed
 	_generate_layout(rng)
