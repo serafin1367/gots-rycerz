@@ -21,7 +21,7 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 ## Wnioski z przeglądu — nie mylić z potwierdzonymi awariami
 1. **P1: sprawdzić przejście od prototypu TileMap do właściwych poziomów.** Aktualna scena TileMap jest izolowanym poligonem testowym, a drugi poziom używa ręcznie rysowanych brył i platform. Potrzebna decyzja o docelowej reprezentacji terenu i stopniowej migracji.
 2. **P1: ustalić mapowanie całego atlasu.** Katalog jawnie rozróżnia `confirmed`, `probable`, `unknown`. Nie przypisywać automatycznie kolizji ani mechanik kafelkom niezweryfikowanym.
-3. **P1: manualny smoke test w edytorze.** Sprawdzić menu, kontynuację, dwa poziomy, zapis/odczyt seeda, portal, zbieranie monet, otrzymywanie obrażeń, atak J, śmierć/restart, pauzę oraz scenę TileMap przez F6. Nie odnotowano tu własnego uruchomienia graficznego gry.
+3. **P1: manualny smoke test pozostałych mechanik.** Użytkownik potwierdził 2026-11-01 weryfikację sceny testowej TileMapLayer. Nie mamy osobnego potwierdzenia, że sprawdzono wszystkie interakcje (w szczególności portal), ani pełnej ścieżki menu, kontynuacji, obu poziomów, zapisu/odczytu seeda, monet, obrażeń, ataku J, śmierci/restartu i pauzy. Tych testów nie oznaczamy jako zaliczonych bez potwierdzenia.
 4. **P2: zgodność wersji Godot.** `project.godot` deklaruje cechy 4.7, a `.github/workflows/godot-tests.yml` używa 4.4.1. Mimo zielonego CI należy ustalić docelową wersję edytora i wyrównać konfiguracje.
 5. **P2: uaktualnić opisy plansz.** `docs/GAME_FLOW.md` powinien odzwierciedlać 5 wysp/15 monet lub wyraźnie dokumentować historyczną wersję.
 6. **P2: sprawdzić bojowy hitbox i kolizje.** `docs/KNIGHT_ATTACK.md` określa atak jako eksperymentalny; wymaga oceny wizualnej i testów podczas faktycznej gry.
@@ -35,7 +35,7 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 - Ten dokument jest żywym dziennikiem projektu. Po pracach aktualizujemy „Potwierdzony stan”, „Wnioski”, „Następny krok” i datę.
 
 ## Rekomendowana kolejność prac
-1. Uruchomić manualny smoke test obecnej wersji oraz sprawdzić zachowanie portalu w scenie testowej.
+1. Przyjąć weryfikację sceny testowej TileMapLayer zgłoszoną przez użytkownika; osobno potwierdzić zachowanie portalu i wykonać smoke test pozostałych mechanik, jeśli nie były sprawdzane.
 2. Ustalić docelowy sposób używania TileMapLayer w prawdziwych poziomach i schemat warstw: Sky / Background / Water / Terrain / Decoration / Objects.
 3. Rozszerzać katalog atlasu tylko o zweryfikowane pozycje; najpierw grunt i krawędzie, potem dekoracje i interakcje.
 4. Zrobić niewielki, odtwarzalny generator terenu TileMapLayer z testami, nie naruszając działających poziomów.
@@ -49,3 +49,5 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 
 ## Historia audytu
 - 2026-11-01: przegląd konfiguracji, logiki przepływu gry, gracza, monet, slime'ów, poziomu 2, sceny testowej TileMap i dokumentacji; zweryfikowano najnowszy commit i wynik CI. Bez zmian w mechanice gry.
+
+- 2026-11-01: użytkownik potwierdził, że scena testowa została zweryfikowana. Odnotowano weryfikację sceny TileMapLayer jako deklarację użytkownika; zakres szczegółowych testów interakcji pozostaje nieokreślony.
