@@ -119,6 +119,10 @@ func _run() -> void:
 			push_error("Crumbling bridge needs four interactive sections")
 			quit(1)
 			return
+		if not bridge_section.get("bridge_style") or bridge_section.get_node_or_null("WoodPlank_0") == null or bridge_section.get_node_or_null("BridgeRope") == null:
+			push_error("Crumbling bridge must show wooden planks")
+			quit(1)
+			return
 		var expected_x: float = level.islands[10].y + 16.0 + 32.0 * float(j)
 		if not is_equal_approx(bridge_section.position.x, expected_x):
 			push_error("Crumbling bridge sections must span the gap")
