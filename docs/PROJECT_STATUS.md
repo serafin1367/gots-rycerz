@@ -42,7 +42,7 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 5. Po testach migrować wybrany fragment poziomu 2; zsynchronizować dokumentację i wersje środowiska.
 
 ## Nierozstrzygnięte pytania projektowe
-- **Preferowany kierunek (wstępnie, 2026-11-01):** większy, proceduralnie generowany świat zamiast klasycznej platformówki z serią ręcznie tworzonych poziomów. Do doprecyzowania: świat ciągły czy regiony, sposób przemieszczania, generowanie i trwałość zmian. To preferencja, nie zatwierdzona szczegółowa specyfikacja.
+- **Aktualna decyzja (2026-11-01):** najpierw grywalne demo z kilkoma wcześniej zaplanowanymi, stałymi poziomami. Odkładamy proceduralny otwarty świat na później. Poprzednia preferencja proceduralnego świata jest nieaktualna.
 - Czy różne kolory podłoża to biomy, czy odmienne zasady fizyki?
 - Jak mają działać woda, bloki ?/!, dekoracje i elementy drewniane (kolizja/interakcja)?
 - Jaka wersja Godot jest docelowa dla developmentu i eksportu?
@@ -52,3 +52,12 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 
 - 2026-11-01: użytkownik potwierdził, że scena testowa została zweryfikowana. Odnotowano weryfikację sceny TileMapLayer jako deklarację użytkownika; zakres szczegółowych testów interakcji pozostaje nieokreślony.
 - 2026-11-01: użytkownik wskazał wstępne preferowanie gry z generowanym światem. Kierunek zapisano bez przesądzania architektury szczegółowej.
+
+## Demo — zmiana priorytetu 2026-11-01
+- Cel bieżący: **trzy poziomy o powtarzalnym układzie**, z menu, monetami, przeciwnikami, portalami i przejściami między scenami.
+- Poziom 1: istniejąca scena `scenes/game.tscn`.
+- Poziom 2: `scenes/level_02.tscn`, układ generowany technicznie, ale z **ustalonym seedem 20261031**; w demie nie losujemy nowej planszy.
+- Poziom 3: nowy `scenes/level_03.tscn` i `scripts/level_03.gd`, ręcznie określonych sześć wysp, 18 monet, czterech przeciwników i portal finałowy.
+- `GameFlow.LEVELS` prowadzi przez trzy sceny; po trzeciej wraca do menu. Zachowujemy kompatybilny system zapisów; wcześniejszy `level_seed` pozostaje w zapisie, choć nie steruje demem.
+- **Weryfikacja:** kod dodany; testy CI i ręczne przejście poziomu 3 wymagają potwierdzenia po commitach. Nie uznajemy nowego poziomu za przetestowany w rozgrywce.
+- Kolejna praca: ocenić wizualnie układ, wykonać przejście wszystkich 3 poziomów, poprawić balans skoków i walki, dodać ekran ukończenia dema.
