@@ -92,3 +92,11 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 - Użytkownik ocenił aktualny poziom jako monotonny. **To otwarty problem projektowy**, nie brak grywalności.
 - Następny priorytet: zastąpić powtarzalny schemat wyspa–monety–slime pięcioma odmiennymi sekwencjami (polana, przeprawy, ruiny, trasa górna, finał), z różną geometrią, układem nagród i tempem walki. Projekt do implementacji i manualnej oceny.
 - Brak checkpointów i restart całego poziomu po śmierci pozostają wymaganiami.
+
+## Nowe mechaniki poziomu 2 — 2026-11-01
+- Użytkownik zaakceptował dodanie nowych mechanik lub wykorzystanie elementów z poziomu 1, aby ograniczyć monotonię.
+- Dodano `scripts/moving_platform.gd`: ruchome platformy, sinusoidalny, przewidywalny ruch, parametry okresu i przemieszczenia. W Zielonych Wyspach występują 3 egzemplarze na wyższej trasie.
+- Dodano `scripts/crumbling_platform.gd`: platformy zapadające się po wejściu gracza (opóźnienie 0,55 s, odtworzenie po 2 s), z sygnalizacją kolorem. Na poziomie 2 występują 3 egzemplarze, ustawione nad bezpiecznym terenem, aby uczyć mechaniki przed użyciem jej jako wymagającej przeszkody.
+- Zaktualizowano `tests/game_flow_test.gd` o obecność i podstawową reakcję nowych elementów; wynik GitHub Actions należy zweryfikować.
+- Nadal obowiązuje pełny restart poziomu po śmierci, bez checkpointów. Cel 5 minut nie jest potwierdzony pomiarem.
+- Test ręczny: sprawdzić ruch platform wraz z graczem, aktywację zapadających się pomostów, poprawność odtwarzania kolizji oraz czy nowe mechaniki faktycznie zmniejszają monotonię. W następnej iteracji można budować sekwencje bardziej angażujące, ale dopiero po weryfikacji bazowych mechanik.
