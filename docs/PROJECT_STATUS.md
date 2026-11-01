@@ -107,3 +107,8 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 - `GapShuttle` kursuje poziomo na środku przepaści (amplituda 54 px, okres 4 s). Na brzegu dodano znacznik miejsca oczekiwania. Platforma korzysta z istniejącego `scripts/moving_platform.gd` i grafiki `platform_green.tscn`.
 - Test `tests/game_flow_test.gd` sprawdza szerokość wyróżnionej przepaści, brak stałego mostku i obecność kursującej platformy.
 - Manualnie do sprawdzenia: czy rycerz stabilnie stoi na ruchomej platformie, potrafi na nią wskoczyć i wyskoczyć oraz czy ruchomy pomost nie zostawia możliwości nieuczciwej śmierci. Brak checkpointów; śmierć restartuje cały poziom.
+
+## Opinia po teście przeprawy — 2026-11-01
+- Użytkownik bardzo pozytywnie ocenił przeprawę z ruchomą platformą nad szeroką przepaścią w poziomie 2 („platforma jest świetna”).
+- Zachowujemy tę mechanikę i traktujemy jako pozytywnie oceniony element projektowania poziomu.
+- Nie jest to równoznaczne z formalnym potwierdzeniem wszystkich testów kolizji ani czasu przejścia.
