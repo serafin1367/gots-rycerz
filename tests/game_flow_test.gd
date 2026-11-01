@@ -66,8 +66,8 @@ func _run() -> void:
 	var manager := level.get_node_or_null("GameManager")
 	var coins := level.get_node_or_null("Coins")
 	var enemy_count := level.find_children("*", "AnimatedSprite2D", true, false).filter(func(n): return n.is_in_group("enemies")).size()
-	if manager == null or coins == null or coins.get_child_count() < 10 or enemy_count < 3 or level.islands.size() != 14:
-		push_error("Level 2 needs manager, at least ten coins and three enemies")
+	if manager == null or coins == null or coins.get_child_count() != 61 or enemy_count != 7 or level.islands.size() != 14:
+		push_error("Green Islands must contain 14 sections, 61 coins and seven enemies")
 		quit(1)
 		return
 	var first_coin: Area2D = coins.get_child(0) as Area2D
@@ -93,10 +93,23 @@ func _run() -> void:
 		return
 	for i in range(level.islands.size() - 1):
 		var gap: float = level.islands[i + 1].x - level.islands[i].y
-		if gap < 28.0 or gap > 43.0:
+		if not is_equal_approx(gap, 32.0):
 			push_error("Procedural gap outside safe bounds")
 			quit(1)
 			return
+	var tilemap := level.get_node_or_null("TerrainMap") as TileMapLayer
+	if tilemap == null or tilemap.get_used_cells().size() < 600:
+		push_error("Green Islands must render verified terrain in TileMapLayer")
+		quit(1)
+		return
+	if level.island_tops.size() != level.islands.size() or level.island_tops[2] == level.island_tops[0]:
+		push_error("Green Islands needs deliberately varied elevations")
+		quit(1)
+		return
+	if level.find_children("HighRoute_*", "AnimatableBody2D", true, false).size() != 10:
+		push_error("Green Islands must include ten elevated route platforms")
+		quit(1)
+		return
 	for enemy in level.get_children():
 		if enemy.is_in_group("enemies") and (enemy.patrol_left >= enemy.position.x or enemy.patrol_right <= enemy.position.x):
 			push_error("Slime patrol bounds are invalid")
