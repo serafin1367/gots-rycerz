@@ -156,8 +156,8 @@ func _add_special_platforms() -> void:
 		mover.name = "MovingPlatform_%02d" % i
 		mover.set_script(MOVING_PLATFORM)
 		mover.position = Vector2(islands[i].x + 95.0, island_tops[i] - 93.0)
-		mover.travel = Vector2(32.0, 0.0)
-		mover.period = 2.6 + float(i % 3) * 0.5
+		mover.set("travel", Vector2(32.0, 0.0))
+		mover.set("period", 2.6 + float(i % 3) * 0.5)
 		add_child(mover)
 	# Sekcja 3: krótkie zapadające się pomosty, nie jedyna droga na następny brzeg.
 	for i in [5, 8, 12]:
