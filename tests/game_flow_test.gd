@@ -110,6 +110,29 @@ func _run() -> void:
 		push_error("Green Islands must include ten elevated route platforms")
 		quit(1)
 		return
+	if level.find_children("MovingPlatform_*", "AnimatableBody2D", true, false).size() != 3:
+		push_error("Green Islands needs three moving platforms")
+		quit(1)
+		return
+	if level.find_children("CrumblingPlatform_*", "AnimatableBody2D", true, false).size() != 3:
+		push_error("Green Islands needs three crumbling platforms")
+		quit(1)
+		return
+	var mover: Node2D = level.get_node("MovingPlatform_04")
+	var start_x := mover.position.x
+	mover._physics_process(0.65)
+	if is_equal_approx(mover.position.x, start_x):
+		push_error("Moving platform should change position")
+		quit(1)
+		return
+	var fragile: Node = level.get_node("CrumblingPlatform_05")
+	var test_bystander := Node2D.new()
+	fragile._on_body_entered(test_bystander)
+	if fragile.triggered:
+		push_error("Only player can trigger crumbling platform")
+		quit(1)
+		return
+	test_bystander.free()
 	for enemy in level.get_children():
 		if enemy.is_in_group("enemies") and (enemy.patrol_left >= enemy.position.x or enemy.patrol_right <= enemy.position.x):
 			push_error("Slime patrol bounds are invalid")
