@@ -1,0 +1,51 @@
+# RYCERZ — stan projektu i ustalenia robocze
+
+Aktualizacja: 2026-11-01. Repozytorium: `serafin1367/gots-rycerz`, gałąź `main`.
+Punkt odniesienia audytu: commit `cf87e8019aa44dfb1d50fc566bae16cccea16302` (2026-11-01, czas polski).
+
+## Cel dokumentu
+To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj ten plik, sprawdź aktualne commity i CI, a dopiero potem planuj zmiany. Po większej zmianie aktualizuj stan, potwierdzone decyzje, problemy i kolejny krok. Dokument odróżnia funkcję obecną w kodzie od funkcji przetestowanej ręcznie.
+
+## Potwierdzony stan kodu
+- Projekt Godot, scena startowa `scenes/main_menu.tscn`; w `project.godot` zadeklarowano funkcje `4.7`. CI korzysta z Godot 4.4.1 — zgodność należy monitorować.
+- `scripts/game_flow.gd`: dwa poziomy (`scenes/game.tscn`, `scenes/level_02.tscn`), pauza, restart, portale, przechodzenie między scenami oraz zapis postępu w `user://rycerz_progress.cfg`. Zapis obejmuje indeks poziomu i seed, ale nie pozycję gracza, HP ani monety.
+- `scripts/player.gd`: ruch, skok, trzy bazowe HP, czasowa nietykalność po trafieniu, HUD serc i monet, eksperymentalny atak mieczem klawiszem J.
+- `scripts/slime.gd`: przeciwnik o bazowym 1 HP, patrolowanie i przyjmowanie obrażeń.
+- `scripts/coin.gd` i `scripts/game_manager.gd`: zbieranie monet, odnajdowanie GameManager w przodkach sceny i aktualizowanie licznika.
+- `scripts/level_02.gd`: deterministyczny układ na podstawie `GameFlow.level_seed`; aktualnie `ISLAND_COUNT = 5`, po 3 monety na wyspę (15 monet) i przeciwnicy na wewnętrznych wyspach (3 slime'y); platformy nad lukami, portal, strefa śmierci. **Uwaga:** starszy `docs/GAME_FLOW.md` opisuje 4 wyspy i 12 monet — ten opis jest nieaktualny wobec kodu.
+- `scenes/test_tilemap_level.tscn` + `scripts/test_tilemap_level.gd`: osobna scena testowa TileMapLayer, uruchamiana F6, z terenem, 6 monetami, jednym slime'em i portalem. Kolizje terenu realizują osobne `StaticBody2D`; nie jest to jeszcze pełny generator świata oparty na TileMap.
+- `assets/data/world_tile_catalog.json` + `scripts/world_tile_catalog.gd`: wspólne źródło współrzędnych atlasu `world_tileset.png` (kafelki 16×16). Domyślnie funkcja `find_tile` dopuszcza tylko wpisy ze statusem `confirmed`. Istnieje dokument `docs/WORLD_TILE_CATALOG.md`.
+- Dla nieba sceny testowej użyto jednolitego tła: kafelki wodne (4,9) i (4,12) dawały widoczne powtórzenia i nie powinny pełnić roli jednolitego nieba.
+- Istnieją skrypty testowe w `tests/` i workflow GitHub Actions. Dla commita `cf87e801` workflow „Godot tests” i „Game flow validation” miały status **success** (sprawdzone 2026-11-01). To potwierdza przejście CI, nie zastępuje manualnego testu rozgrywki i grafiki.
+
+## Wnioski z przeglądu — nie mylić z potwierdzonymi awariami
+1. **P1: sprawdzić przejście od prototypu TileMap do właściwych poziomów.** Aktualna scena TileMap jest izolowanym poligonem testowym, a drugi poziom używa ręcznie rysowanych brył i platform. Potrzebna decyzja o docelowej reprezentacji terenu i stopniowej migracji.
+2. **P1: ustalić mapowanie całego atlasu.** Katalog jawnie rozróżnia `confirmed`, `probable`, `unknown`. Nie przypisywać automatycznie kolizji ani mechanik kafelkom niezweryfikowanym.
+3. **P1: manualny smoke test w edytorze.** Sprawdzić menu, kontynuację, dwa poziomy, zapis/odczyt seeda, portal, zbieranie monet, otrzymywanie obrażeń, atak J, śmierć/restart, pauzę oraz scenę TileMap przez F6. Nie odnotowano tu własnego uruchomienia graficznego gry.
+4. **P2: zgodność wersji Godot.** `project.godot` deklaruje cechy 4.7, a `.github/workflows/godot-tests.yml` używa 4.4.1. Mimo zielonego CI należy ustalić docelową wersję edytora i wyrównać konfiguracje.
+5. **P2: uaktualnić opisy plansz.** `docs/GAME_FLOW.md` powinien odzwierciedlać 5 wysp/15 monet lub wyraźnie dokumentować historyczną wersję.
+6. **P2: sprawdzić bojowy hitbox i kolizje.** `docs/KNIGHT_ATTACK.md` określa atak jako eksperymentalny; wymaga oceny wizualnej i testów podczas faktycznej gry.
+7. **P2: zweryfikować odporność sceny testowej.** Portal w `test_tilemap_level.gd` korzysta z `GameFlow` mimo że scena jest uruchamiana samodzielnie (F6); wykonać próbę wejścia w portal i sprawdzić pożądane zachowanie.
+
+## Ustalenia robocze
+- Modyfikujemy **wyłącznie** repozytorium `https://github.com/serafin1367/gots-rycerz`; zmiany zapisujemy bezpośrednio w kodzie i dokumentacji tego repozytorium.
+- Nie zgadujemy, co przedstawiają nieznane kafelki ani jakie mają kolizje. Potwierdzone dane zapisujemy w katalogu i dokumentujemy.
+- Generator powinien być odtwarzalny po seedzie.
+- Każdą większą modyfikację weryfikujemy testami CI, a zachowanie wymagające obrazu/manualnej interakcji oznaczamy jako niezweryfikowane do czasu sprawdzenia w Godot.
+- Ten dokument jest żywym dziennikiem projektu. Po pracach aktualizujemy „Potwierdzony stan”, „Wnioski”, „Następny krok” i datę.
+
+## Rekomendowana kolejność prac
+1. Uruchomić manualny smoke test obecnej wersji oraz sprawdzić zachowanie portalu w scenie testowej.
+2. Ustalić docelowy sposób używania TileMapLayer w prawdziwych poziomach i schemat warstw: Sky / Background / Water / Terrain / Decoration / Objects.
+3. Rozszerzać katalog atlasu tylko o zweryfikowane pozycje; najpierw grunt i krawędzie, potem dekoracje i interakcje.
+4. Zrobić niewielki, odtwarzalny generator terenu TileMapLayer z testami, nie naruszając działających poziomów.
+5. Po testach migrować wybrany fragment poziomu 2; zsynchronizować dokumentację i wersje środowiska.
+
+## Nierozstrzygnięte pytania projektowe
+- Czy pełna gra ma pozostać platformówką 2D z osobnymi poziomami, czy powstać większy, proceduralny świat?
+- Czy różne kolory podłoża to biomy, czy odmienne zasady fizyki?
+- Jak mają działać woda, bloki ?/!, dekoracje i elementy drewniane (kolizja/interakcja)?
+- Jaka wersja Godot jest docelowa dla developmentu i eksportu?
+
+## Historia audytu
+- 2026-11-01: przegląd konfiguracji, logiki przepływu gry, gracza, monet, slime'ów, poziomu 2, sceny testowej TileMap i dokumentacji; zweryfikowano najnowszy commit i wynik CI. Bez zmian w mechanice gry.
