@@ -61,3 +61,13 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 - `GameFlow.LEVELS` prowadzi przez trzy sceny; po trzeciej wraca do menu. Zachowujemy kompatybilny system zapisów; wcześniejszy `level_seed` pozostaje w zapisie, choć nie steruje demem.
 - **Weryfikacja:** kod dodany; testy CI i ręczne przejście poziomu 3 wymagają potwierdzenia po commitach. Nie uznajemy nowego poziomu za przetestowany w rozgrywce.
 - Kolejna praca: ocenić wizualnie układ, wykonać przejście wszystkich 3 poziomów, poprawić balans skoków i walki, dodać ekran ukończenia dema.
+
+## Docelowy czas rozgrywki — decyzja użytkownika 2026-11-01
+- **15 minut na całe demo; około 5 minut na poziom.** Jest to cel do potwierdzenia testami z zegarem, NIE aktualnie zmierzony czas.
+- Poziomy 2 i 3 mają wymagać więcej pracy nad kompozycją, oprawą, mechanikami i balansem. Nie uznajemy samego zwiększenia długości za ukończone dopracowanie.
+- Poziom 2: 14 przygotowanych wysp o stałych szerokościach i przerwach (odstępy 28–43 px), 56 monet, 7 slime'ów; istniejące zasoby i stały seed. Kod generuje bryły z danych, ale nie losuje projektu.
+- Poziom 3: 16 zaplanowanych wysp, 64 monety i 9 slime'ów; stopniowanie sekcji przez szerokości i pozycje pomostów. Układ jest stały.
+- Poziom 1 nie został jeszcze przebudowany do pięciu minut; jego czas jest niezweryfikowany.
+- Następne priorytety: (1) pomiar czasów przejścia wszystkich trzech poziomów, (2) punkty kontrolne i ograniczenie frustracji po śmierci w dłuższych etapach, (3) różne rodzaje wyzwań zamiast samych powtarzalnych wysp i slime'ów, (4) dekoracje i tematy poziomów, (5) ekran zakończenia dema.
+- Weryfikować w Godot manualnie osiągalność wszystkich pomostów i monet oraz czas przejścia. Testy CI sprawdzają tylko część właściwości i nie potwierdzają pięciominutowego tempa.
+- **Nadrzędne ustalenie:** najpierw dopracowane, stałe demo; proceduralny otwarty świat poza aktualnym zakresem.
