@@ -126,3 +126,7 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 - Cztery segmenty `CrumblingBridge_00..03` w poziomie 2 korzystają z nowej dekoracji. Zwykłe zapadające się platformy pozostają bez niej. Skrypt zapamiętuje i przywraca oryginalną warstwę kolizji.
 - Dodano testy obecności drewnianych elementów przy każdym segmencie w `tests/game_flow_test.gd`.
 - Wymagana kontrola w Godot: czy deski są widoczne i czytelnie zmieniają kolor przed zapadnięciem, czy gracz płynnie przechodzi cały most oraz czy segmenty odtwarzają fizykę po 3 s. Nowe CI wymaga sprawdzenia.
+
+## Potwierdzenie testu mostu — 2026-11-01
+- Użytkownik potwierdził podczas rozgrywki: **„znikający most działa”**. Mechanikę zapadania się mostu w poziomie 2 uznajemy za działającą według testu użytkownika.
+- Nie oznacza to pomiaru czasu przejścia pięciominutowego poziomu ani potwierdzenia każdej sytuacji brzegowej. Zachowujemy przeprawę i nie zmieniamy jej bez uzasadnienia.
