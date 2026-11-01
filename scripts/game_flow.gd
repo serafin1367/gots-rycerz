@@ -1,6 +1,6 @@
 extends Node
 
-const LEVELS: Array[String] = ["res://scenes/game.tscn", "res://scenes/level_02.tscn"]
+const LEVELS: Array[String] = ["res://scenes/game.tscn", "res://scenes/level_02.tscn", "res://scenes/level_03.tscn"]
 const MAIN_MENU := "res://scenes/main_menu.tscn"
 const SAVE_PATH := "user://rycerz_progress.cfg"
 var save_path := SAVE_PATH
