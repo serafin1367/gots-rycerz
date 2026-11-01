@@ -8,6 +8,8 @@ const COIN = preload("res://scenes/coin.tscn")
 const KILL_ZONE = preload("res://scenes/kill_zone.tscn")
 const TILE_CATALOG = preload("res://scripts/world_tile_catalog.gd")
 const TILE_TEXTURE = preload("res://assets/sprites/world_tileset.png")
+const MOVING_PLATFORM = preload("res://scripts/moving_platform.gd")
+const CRUMBLING_PLATFORM = preload("res://scripts/crumbling_platform.gd")
 const TILE_SIZE := 16
 const TOP_Y := 96.0
 const ISLAND_COUNT := 14
@@ -28,6 +30,7 @@ func _ready() -> void:
 	for i in range(islands.size()):
 		_make_island(i)
 	_make_bridges()
+	_add_special_platforms()
 	_spawn_collectibles()
 	_spawn_enemies()
 	_add_death_floor()
@@ -145,6 +148,29 @@ func _make_bridges() -> void:
 			platform.name = "HighRoute_%02d_%d" % [i, j]
 			platform.position = Vector2(span.x + 65.0 + float(j) * 46.0, island_tops[i] - 64.0 - float(j) * 12.0)
 			add_child(platform)
+
+func _add_special_platforms() -> void:
+	# Sekcja 2: bezpieczny pokaz ruchomych platform nad szerokim lądem.
+	for i in [4, 9, 11]:
+		var mover := PLATFORM.instantiate()
+		mover.name = "MovingPlatform_%02d" % i
+		mover.set_script(MOVING_PLATFORM)
+		mover.position = Vector2(islands[i].x + 95.0, island_tops[i] - 93.0)
+		mover.travel = Vector2(32.0, 0.0)
+		mover.period = 2.6 + float(i % 3) * 0.5
+		add_child(mover)
+	# Sekcja 3: krótkie zapadające się pomosty, nie jedyna droga na następny brzeg.
+	for i in [5, 8, 12]:
+		var fragile := PLATFORM.instantiate()
+		fragile.name = "CrumblingPlatform_%02d" % i
+		fragile.set_script(CRUMBLING_PLATFORM)
+		fragile.position = Vector2(islands[i].x + 115.0, island_tops[i] - 47.0)
+		add_child(fragile)
+	# Przejrzyste wskazówki wizualne dla nowych mechanik.
+	for i in [4, 9, 11]:
+		_add_rect("MovingPlatformMarker", 1, Color("#f0d96b"), islands[i].x + 47.0, island_tops[i] - 102.0, islands[i].x + 52.0, island_tops[i] - 94.0)
+	for i in [5, 8, 12]:
+		_add_rect("FragilePlatformMarker", 1, Color("#d77b54"), islands[i].x + 107.0, island_tops[i] - 52.0, islands[i].x + 123.0, island_tops[i] - 49.0)
 
 func _spawn_collectibles() -> void:
 	for i in range(ISLAND_COUNT):
