@@ -93,10 +93,21 @@ func _run() -> void:
 		return
 	for i in range(level.islands.size() - 1):
 		var gap: float = level.islands[i + 1].x - level.islands[i].y
-		if not is_equal_approx(gap, 32.0):
+		if not is_equal_approx(gap, 144.0 if i == 6 else 32.0):
 			push_error("Procedural gap outside safe bounds")
 			quit(1)
 			return
+	var shuttle := level.get_node_or_null("GapShuttle") as AnimatableBody2D
+	if shuttle == null or level.has_node("GapBridge_06"):
+		push_error("Wide gap must use shuttle instead of a fixed bridge")
+		quit(1)
+		return
+	var left_edge: float = level.islands[6].y
+	var right_edge: float = level.islands[7].x
+	if shuttle.position.x <= left_edge or shuttle.position.x >= right_edge or absf(shuttle.travel.x - 54.0) > 0.01:
+		push_error("Gap shuttle must travel inside the crossing")
+		quit(1)
+		return
 	var tilemap := level.get_node_or_null("TerrainMap") as TileMapLayer
 	if tilemap == null or tilemap.get_used_cells().size() < 600:
 		push_error("Green Islands must render verified terrain in TileMapLayer")
