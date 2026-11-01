@@ -119,3 +119,10 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 - Na brzegu dodano wyróżniony kolorem znak ostrzegawczy. Most wymaga szybkiego przejścia, a nie oczekiwania jak przeprawa wahadłowa.
 - Test przepływu weryfikuje szerokość nowej przepaści, brak stałego pomostu oraz komplet i rozmieszczenie 4 interaktywnych segmentów.
 - Wymaga ręcznego testu przejścia, tempa rozpadu, odtwarzania segmentów i tego, czy pozostała możliwość uczciwego skoku. Brak checkpointów pozostaje zasadą.
+
+## Dopracowanie mostu — 2026-11-01
+- Zweryfikowano zakończone sukcesem 3 workflow GitHub Actions dla wcześniejszego commita `e2c497d5`: Godot tests, Game flow validation, Attack preview validation. To nie jest potwierdzenie rozgrywki ręcznej.
+- Rozbudowano `scripts/crumbling_platform.gd` o opcjonalny `bridge_style`: drewniane deski (3 wielokąty) i lina/obrys w `Line2D`; dekoracja powstaje z prostych kształtów, **nie** z niepotwierdzonego kafelka `wood_structure`.
+- Cztery segmenty `CrumblingBridge_00..03` w poziomie 2 korzystają z nowej dekoracji. Zwykłe zapadające się platformy pozostają bez niej. Skrypt zapamiętuje i przywraca oryginalną warstwę kolizji.
+- Dodano testy obecności drewnianych elementów przy każdym segmencie w `tests/game_flow_test.gd`.
+- Wymagana kontrola w Godot: czy deski są widoczne i czytelnie zmieniają kolor przed zapadnięciem, czy gracz płynnie przechodzi cały most oraz czy segmenty odtwarzają fizykę po 3 s. Nowe CI wymaga sprawdzenia.
