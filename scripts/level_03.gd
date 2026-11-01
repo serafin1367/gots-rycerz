@@ -34,7 +34,7 @@ func _ready() -> void:
 	$LevelPortal.position = Vector2(islands.back().y - 48, TOP_Y - 40)
 
 func _draw_background() -> void:
-	var world_end := islands.back().y + 300.0
+	var world_end: float = islands.back().y + 300.0
 	var sky := Polygon2D.new()
 	sky.name = "Sky"
 	sky.z_index = -100
