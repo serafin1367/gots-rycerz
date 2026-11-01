@@ -119,7 +119,9 @@ func _run() -> void:
 		quit(1)
 		return
 	var mover: Node2D = level.get_node("MovingPlatform_04")
-	var start_x := mover.position.x
+	mover.clock = 0.0
+	mover.origin = mover.position
+	var start_x: float = mover.position.x
 	mover._physics_process(0.65)
 	if is_equal_approx(mover.position.x, start_x):
 		push_error("Moving platform should change position")
