@@ -5,7 +5,7 @@ const PLATFORM = preload("res://scenes/platform_green.tscn")
 const SLIME = preload("res://scenes/slime.tscn")
 const COIN = preload("res://scenes/coin.tscn")
 const KILL_ZONE = preload("res://scenes/kill_zone.tscn")
-const ISLAND_COUNT := 5
+const ISLAND_COUNT := 14
 const TOP_Y := 102.0
 const GAP_MIN := 28.0
 const GAP_MAX := 43.0
@@ -14,7 +14,7 @@ var generation_seed: int = 0
 var islands: Array[Vector2] = []
 
 func _ready() -> void:
-	generation_seed = 20261031 # Demo: ten sam przygotowany układ przy każdym uruchomieniu
+	generation_seed = 20261031 # Stała wersja demo; bez zmiany układu pomiędzy rozgrywkami
 	var rng := RandomNumberGenerator.new()
 	rng.seed = generation_seed
 	_generate_layout(rng)
@@ -33,9 +33,9 @@ func _generate_layout(rng: RandomNumberGenerator) -> void:
 	islands.clear()
 	var cursor := 0.0
 	for i in range(ISLAND_COUNT):
-		var width := float(rng.randi_range(165, 210))
+		var width := float([190, 220, 185, 245, 205, 230, 180, 250, 210, 235, 195, 240, 205, 270][i])
 		islands.append(Vector2(cursor, cursor + width))
-		cursor += width + float(rng.randi_range(int(GAP_MIN), int(GAP_MAX)))
+		cursor += width + float([32, 38, 35, 40, 33, 42, 34, 39, 36, 41, 33, 38, 35, 32][i])
 
 func _draw_background() -> void:
 	var width: float = islands.back().y + 300.0
@@ -85,13 +85,13 @@ func _make_bridges(rng: RandomNumberGenerator) -> void:
 func _spawn_collectibles(rng: RandomNumberGenerator) -> void:
 	for i in range(ISLAND_COUNT):
 		var span := islands[i]
-		for j in range(3):
+		for j in range(4):
 			var coin := COIN.instantiate()
-			coin.position = Vector2(lerpf(span.x + 32.0, span.y - 32.0, float(j + 1) / 4.0), TOP_Y - float(rng.randi_range(26, 48)))
+			coin.position = Vector2(lerpf(span.x + 32.0, span.y - 32.0, float(j + 1) / 5.0), TOP_Y - float(rng.randi_range(26, 48)))
 			$Coins.add_child(coin)
 
 func _spawn_enemies() -> void:
-	for i in range(1, ISLAND_COUNT - 1):
+	for i in [1, 3, 4, 6, 8, 10, 12]:
 		var span := islands[i]
 		var enemy := SLIME.instantiate()
 		enemy.position = Vector2((span.x + span.y) / 2.0, TOP_Y - 12.0)
