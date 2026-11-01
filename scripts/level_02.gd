@@ -14,6 +14,8 @@ const TILE_SIZE := 16
 const TOP_Y := 96.0
 const ISLAND_COUNT := 14
 const EDGE_MARGIN := 26.0
+const SHUTTLE_GAP_INDEX := 6
+const SHUTTLE_GAP_WIDTH := 144.0
 const ISLAND_WIDTHS := [192, 224, 192, 256, 208, 240, 192, 256, 224, 240, 208, 256, 224, 288]
 const HEIGHT_OFFSETS := [0, 0, -16, -16, 0, 16, 0, -16, -16, 0, 16, 0, -16, 0]
 const ENEMY_ISLANDS := [2, 3, 5, 7, 8, 10, 12]
@@ -46,7 +48,7 @@ func _build_layout() -> void:
 		var width := float(ISLAND_WIDTHS[i])
 		islands.append(Vector2(cursor, cursor + width))
 		island_tops.append(TOP_Y + float(HEIGHT_OFFSETS[i]))
-		cursor += width + 32.0
+		cursor += width + (SHUTTLE_GAP_WIDTH if i == SHUTTLE_GAP_INDEX else 32.0)
 
 func _create_terrain_layer() -> void:
 	var tiles := TileSet.new()
@@ -136,6 +138,8 @@ func _make_island(index: int) -> void:
 func _make_bridges() -> void:
 	for i in range(ISLAND_COUNT - 1):
 		var middle: float = (islands[i].y + islands[i + 1].x) / 2.0
+		if i == SHUTTLE_GAP_INDEX:
+			continue # Przeprawa wyłącznie za pomocą platformy kursującej.
 		var ledge := PLATFORM.instantiate()
 		ledge.name = "GapBridge_%02d" % i
 		ledge.position = Vector2(middle, minf(island_tops[i], island_tops[i + 1]) - float(BRIDGE_RISE[i]))
@@ -150,6 +154,19 @@ func _make_bridges() -> void:
 			add_child(platform)
 
 func _add_special_platforms() -> void:
+	# Szeroka przepaść: platforma przybija raz do jednego, raz do drugiego brzegu.
+	# Zasięg od brzegu jest krótki; zwykły skok ponad całą przepaścią nie wystarcza.
+	var left_edge: float = islands[SHUTTLE_GAP_INDEX].y
+	var right_edge: float = islands[SHUTTLE_GAP_INDEX + 1].x
+	var shuttle := PLATFORM.instantiate()
+	shuttle.name = "GapShuttle"
+	shuttle.set_script(MOVING_PLATFORM)
+	shuttle.position = Vector2((left_edge + right_edge) / 2.0, minf(island_tops[SHUTTLE_GAP_INDEX], island_tops[SHUTTLE_GAP_INDEX + 1]) - 9.0)
+	shuttle.set("travel", Vector2(54.0, 0.0))
+	shuttle.set("period", 4.0)
+	add_child(shuttle)
+	# Znacznik bezpiecznego miejsca oczekiwania.
+	_add_rect("ShuttleWaitingMarker", 3, Color("#f6dd73"), left_edge - 35.0, island_tops[SHUTTLE_GAP_INDEX] - 7.0, left_edge - 15.0, island_tops[SHUTTLE_GAP_INDEX] - 4.0)
 	# Sekcja 2: bezpieczny pokaz ruchomych platform nad szerokim lądem.
 	for i in [4, 9, 11]:
 		var mover := PLATFORM.instantiate()
