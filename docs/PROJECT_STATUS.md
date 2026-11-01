@@ -100,3 +100,10 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 - Zaktualizowano `tests/game_flow_test.gd` o obecność i podstawową reakcję nowych elementów; wynik GitHub Actions należy zweryfikować.
 - Nadal obowiązuje pełny restart poziomu po śmierci, bez checkpointów. Cel 5 minut nie jest potwierdzony pomiarem.
 - Test ręczny: sprawdzić ruch platform wraz z graczem, aktywację zapadających się pomostów, poprawność odtwarzania kolizji oraz czy nowe mechaniki faktycznie zmniejszają monotonię. W następnej iteracji można budować sekwencje bardziej angażujące, ale dopiero po weryfikacji bazowych mechanik.
+
+## Przeprawa wahadłowa — 2026-11-01
+- Życzenie użytkownika: szeroka przepaść, oczekiwanie aż ruchoma platforma przypłynie do brzegu, przejazd i zeskok na drugi brzeg.
+- Po wyspie nr 7 w indeksowaniu od 1 (indeks 6 w kodzie) ustawiono **przepaść 144 px** zamiast 32 px; usunięto standardowy stały mostek w tym miejscu.
+- `GapShuttle` kursuje poziomo na środku przepaści (amplituda 54 px, okres 4 s). Na brzegu dodano znacznik miejsca oczekiwania. Platforma korzysta z istniejącego `scripts/moving_platform.gd` i grafiki `platform_green.tscn`.
+- Test `tests/game_flow_test.gd` sprawdza szerokość wyróżnionej przepaści, brak stałego mostku i obecność kursującej platformy.
+- Manualnie do sprawdzenia: czy rycerz stabilnie stoi na ruchomej platformie, potrafi na nią wskoczyć i wyskoczyć oraz czy ruchomy pomost nie zostawia możliwości nieuczciwej śmierci. Brak checkpointów; śmierć restartuje cały poziom.
