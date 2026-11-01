@@ -16,6 +16,8 @@ const ISLAND_COUNT := 14
 const EDGE_MARGIN := 26.0
 const SHUTTLE_GAP_INDEX := 6
 const SHUTTLE_GAP_WIDTH := 144.0
+const CRUMBLING_BRIDGE_INDEX := 10
+const CRUMBLING_BRIDGE_WIDTH := 128.0
 const ISLAND_WIDTHS := [192, 224, 192, 256, 208, 240, 192, 256, 224, 240, 208, 256, 224, 288]
 const HEIGHT_OFFSETS := [0, 0, -16, -16, 0, 16, 0, -16, -16, 0, 16, 0, -16, 0]
 const ENEMY_ISLANDS := [2, 3, 5, 7, 8, 10, 12]
@@ -33,6 +35,7 @@ func _ready() -> void:
 		_make_island(i)
 	_make_bridges()
 	_add_special_platforms()
+	_make_crumbling_bridge()
 	_spawn_collectibles()
 	_spawn_enemies()
 	_add_death_floor()
@@ -48,7 +51,7 @@ func _build_layout() -> void:
 		var width := float(ISLAND_WIDTHS[i])
 		islands.append(Vector2(cursor, cursor + width))
 		island_tops.append(TOP_Y + float(HEIGHT_OFFSETS[i]))
-		cursor += width + (SHUTTLE_GAP_WIDTH if i == SHUTTLE_GAP_INDEX else 32.0)
+		cursor += width + (SHUTTLE_GAP_WIDTH if i == SHUTTLE_GAP_INDEX else CRUMBLING_BRIDGE_WIDTH if i == CRUMBLING_BRIDGE_INDEX else 32.0)
 
 func _create_terrain_layer() -> void:
 	var tiles := TileSet.new()
@@ -138,8 +141,8 @@ func _make_island(index: int) -> void:
 func _make_bridges() -> void:
 	for i in range(ISLAND_COUNT - 1):
 		var middle: float = (islands[i].y + islands[i + 1].x) / 2.0
-		if i == SHUTTLE_GAP_INDEX:
-			continue # Przeprawa wyłącznie za pomocą platformy kursującej.
+		if i == SHUTTLE_GAP_INDEX or i == CRUMBLING_BRIDGE_INDEX:
+			continue # Wybrane przepaście korzystają z odrębnych mechanik.
 		var ledge := PLATFORM.instantiate()
 		ledge.name = "GapBridge_%02d" % i
 		ledge.position = Vector2(middle, minf(island_tops[i], island_tops[i + 1]) - float(BRIDGE_RISE[i]))
@@ -188,6 +191,25 @@ func _add_special_platforms() -> void:
 		_add_rect("MovingPlatformMarker", 1, Color("#f0d96b"), islands[i].x + 47.0, island_tops[i] - 102.0, islands[i].x + 52.0, island_tops[i] - 94.0)
 	for i in [5, 8, 12]:
 		_add_rect("FragilePlatformMarker", 1, Color("#d77b54"), islands[i].x + 107.0, island_tops[i] - 52.0, islands[i].x + 123.0, island_tops[i] - 49.0)
+
+func _make_crumbling_bridge() -> void:
+	# Czterosegmentowy most nad prawdziwą przepaścią; segmenty zapadają się po wejściu.
+	# Korzystamy z istniejącej, potwierdzonej grafiki platformy. Drewniane kafelki
+	# z atlasu nadal wymagają weryfikacji i nie są tu traktowane jako pewne.
+	var left_edge: float = islands[CRUMBLING_BRIDGE_INDEX].y
+	var right_edge: float = islands[CRUMBLING_BRIDGE_INDEX + 1].x
+	var bridge_y: float = minf(island_tops[CRUMBLING_BRIDGE_INDEX], island_tops[CRUMBLING_BRIDGE_INDEX + 1]) - 7.0
+	for i in range(4):
+		var segment := PLATFORM.instantiate()
+		segment.name = "CrumblingBridge_%02d" % i
+		segment.set_script(CRUMBLING_PLATFORM)
+		segment.position = Vector2(left_edge + 16.0 + float(i) * 32.0, bridge_y)
+		segment.set("collapse_delay", 0.85 if i == 0 else 0.72)
+		segment.set("respawn_delay", 3.0)
+		add_child(segment)
+	# Ostrzegawcze oznaczenie tuż przed pierwszym segmentem.
+	_add_rect("CrumblingBridgeWarning", 3, Color("#f2b665"), left_edge - 27.0, island_tops[CRUMBLING_BRIDGE_INDEX] - 8.0, left_edge - 8.0, island_tops[CRUMBLING_BRIDGE_INDEX] - 4.0)
+	assert(is_equal_approx(right_edge - left_edge, CRUMBLING_BRIDGE_WIDTH))
 
 func _spawn_collectibles() -> void:
 	for i in range(ISLAND_COUNT):
