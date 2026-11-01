@@ -93,7 +93,7 @@ func _run() -> void:
 		return
 	for i in range(level.islands.size() - 1):
 		var gap: float = level.islands[i + 1].x - level.islands[i].y
-		if not is_equal_approx(gap, 144.0 if i == 6 else 32.0):
+		if not is_equal_approx(gap, 144.0 if i == 6 else 128.0 if i == 10 else 32.0):
 			push_error("Procedural gap outside safe bounds")
 			quit(1)
 			return
@@ -109,6 +109,21 @@ func _run() -> void:
 		push_error("Gap shuttle must travel inside the crossing")
 		quit(1)
 		return
+	if level.has_node("GapBridge_10"):
+		push_error("Crumbling bridge gap cannot contain a permanent bridge")
+		quit(1)
+		return
+	for j in range(4):
+		var bridge_section := level.get_node_or_null("CrumblingBridge_%02d" % j) as AnimatableBody2D
+		if bridge_section == null or bridge_section.get_node_or_null("StepDetector") == null:
+			push_error("Crumbling bridge needs four interactive sections")
+			quit(1)
+			return
+		var expected_x: float = level.islands[10].y + 16.0 + 32.0 * float(j)
+		if not is_equal_approx(bridge_section.position.x, expected_x):
+			push_error("Crumbling bridge sections must span the gap")
+			quit(1)
+			return
 	var tilemap := level.get_node_or_null("TerrainMap") as TileMapLayer
 	if tilemap == null or tilemap.get_used_cells().size() < 600:
 		push_error("Green Islands must render verified terrain in TileMapLayer")
