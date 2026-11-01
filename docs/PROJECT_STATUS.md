@@ -112,3 +112,10 @@ To jest punkt startowy następnych sesji. Na początku kolejnej pracy przeczytaj
 - Użytkownik bardzo pozytywnie ocenił przeprawę z ruchomą platformą nad szeroką przepaścią w poziomie 2 („platforma jest świetna”).
 - Zachowujemy tę mechanikę i traktujemy jako pozytywnie oceniony element projektowania poziomu.
 - Nie jest to równoznaczne z formalnym potwierdzeniem wszystkich testów kolizji ani czasu przejścia.
+
+## Zapadający się most nad przepaścią — 2026-11-01
+- Dodano do poziomu 2 drugi wyróżniony odcinek: 128-pikselową przepaść między wyspami o indeksach 10 i 11 (licząc od zera). Standardowy stały pomost został usunięty.
+- Most składa się z 4 sąsiednich platform `CrumblingBridge_00`–`03`, które zmieniają kolor po wejściu rycerza, zapadają się po 0,72–0,85 sekundy, a po 3 sekundach odtwarzają kolizję. Wykorzystano istniejącą zweryfikowaną scenę `platform_green.tscn`; kafel `wood_structure` z atlasu nadal jest niepotwierdzony i nie został użyty jako most.
+- Na brzegu dodano wyróżniony kolorem znak ostrzegawczy. Most wymaga szybkiego przejścia, a nie oczekiwania jak przeprawa wahadłowa.
+- Test przepływu weryfikuje szerokość nowej przepaści, brak stałego pomostu oraz komplet i rozmieszczenie 4 interaktywnych segmentów.
+- Wymaga ręcznego testu przejścia, tempa rozpadu, odtwarzania segmentów i tego, czy pozostała możliwość uczciwego skoku. Brak checkpointów pozostaje zasadą.
